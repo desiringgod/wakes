@@ -1,6 +1,5 @@
 FactoryGirl.define do
-  factory :wakes_resource, :class => 'Wakes::Resource' do
+  factory :resource, :class => 'Wakes::Resource' do
     
   end
-
 end

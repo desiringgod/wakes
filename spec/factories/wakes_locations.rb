@@ -1,6 +1,5 @@
 FactoryGirl.define do
-  factory :wakes_location, :class => 'Wakes::Location' do
-    
+  factory :location, :class => 'Wakes::Location' do
+    path '/some/path'
   end
-
 end

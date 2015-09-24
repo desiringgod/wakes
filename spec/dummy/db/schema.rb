@@ -14,11 +14,16 @@
 ActiveRecord::Schema.define(version: 20150924183459) do
 
   create_table "wakes_locations", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "path"
+    t.integer  "wakes_resource_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
+  add_index "wakes_locations", ["wakes_resource_id"], name: "index_wakes_locations_on_wakes_resource_id"
+
   create_table "wakes_resources", force: :cascade do |t|
+    t.string   "label"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
