@@ -6,12 +6,11 @@ require 'wakes/version'
 Gem::Specification.new do |spec|
   spec.name          = "wakes"
   spec.version       = Wakes::VERSION
-  spec.authors       = ["Ben Hutton"]
-  spec.email         = ["benhutton@gmail.com"]
+  spec.authors       = ["Ben Hutton", "Desiring God"]
+  spec.email         = ["benhutton@gmail.com", "web@desiringgod.org"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Wakes stores a graph of Resources and Locations for use in legacy redirection and metrics aggregation}
+  spec.homepage      = "https://github.com/desiringgod/wakes"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
