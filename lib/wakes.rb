@@ -3,5 +3,7 @@ require "wakes/version"
 require "wakes/engine"
 
 module Wakes
-  # Your code goes here...
+  def self.table_name_prefix
+    'wakes_'
+  end
 end
