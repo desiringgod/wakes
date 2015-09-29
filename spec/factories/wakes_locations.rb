@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :location, :class => 'Wakes::Location' do
-    path '/some/path'
+    sequence(:path) { |n| "/some/path/#{n}" }
   end
 end

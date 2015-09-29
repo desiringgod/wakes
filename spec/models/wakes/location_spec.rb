@@ -6,6 +6,11 @@ RSpec.describe Wakes::Location, type: :model do
       expect(build(:location, :path => 'some/path')).to_not be_valid
       expect(build(:location, :path => '/some/path')).to be_valid
     end
+
+    it 'must be unique' do
+      expect(create(:location, :path => '/some/path')).to be_valid
+      expect(build(:location, :path => '/some/path')).to_not be_valid
+    end
   end
 
   it 'belongs to a resource' do
