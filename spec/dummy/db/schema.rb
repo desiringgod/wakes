@@ -24,8 +24,12 @@ ActiveRecord::Schema.define(version: 20150924183459) do
 
   create_table "wakes_resources", force: :cascade do |t|
     t.string   "label"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "wakeable_id"
+    t.string   "wakeable_type"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
+
+  add_index "wakes_resources", ["wakeable_id", "wakeable_type"], name: "index_wakes_resources_on_wakeable_id_and_wakeable_type"
 
 end
