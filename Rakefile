@@ -9,4 +9,6 @@ load 'rails/tasks/engine.rake'
 
 load 'rails/tasks/statistics.rake'
 
+task :reset_db => ['app:db:drop', 'app:db:create', 'app:db:migrate', 'app:db:test:prepare']
+
 task :default => :spec
