@@ -14,4 +14,11 @@ module Wakes
   def self.table_name_prefix
     'wakes_'
   end
+
+  def self.create(label:, wakeable: nil, path:)
+    logger.debug { "Creating wake for #{label} at #{path}" }
+    resource = Wakes::Resource.new(:label => label, :wakeable => wakeable)
+    resource.locations.build(:path => path, :canonical => true)
+    resource.save!
+  end
 end
