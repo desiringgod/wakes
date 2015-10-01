@@ -3,6 +3,7 @@ class CreateWakesLocations < ActiveRecord::Migration
     create_table :wakes_locations do |t|
       t.string :path
       t.belongs_to :wakes_resource
+      t.boolean :canonical
 
       t.timestamps null: false
     end

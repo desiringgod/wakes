@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 20150924183459) do
   create_table "wakes_locations", force: :cascade do |t|
     t.string   "path"
     t.integer  "wakes_resource_id"
+    t.boolean  "canonical"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
   end
