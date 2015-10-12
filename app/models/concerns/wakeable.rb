@@ -6,8 +6,8 @@ module Wakeable
     accepts_nested_attributes_for :wakes_resources
 
     after_create do
-      wakes_resource = wakes_resources.build(:label => wakes_label)
-      wakes_resource.locations.build(:path => wakes_path, :canonical => true)
+      wakes_resource = wakes_resources.build(:label => wakes_value_for(:label))
+      wakes_resource.locations.build(:path => wakes_value_for(:path), :canonical => true)
       wakes_resource.save!
     end
 
@@ -15,12 +15,12 @@ module Wakeable
       wakes_resource = wakes_resources.first
 
       if changes.include?('title')
-        wakes_resource.update(:label => title)
+        wakes_resource.update(:label => wakes_value_for(:label))
       end
 
-      if wakes_resource.canonical_location.path != wakes_path
+      if wakes_resource.canonical_location.path != wakes_value_for(:path)
         wakes_resource.locations.update_all(:canonical => false)
-        wakes_resource.locations.create(:path => wakes_path, :canonical => true)
+        wakes_resource.locations.create(:path => wakes_value_for(:path), :canonical => true)
       end
 
       if respond_to?(:wakes_dependents)
@@ -29,29 +29,29 @@ module Wakeable
     end
   end
 
-  module ClassMethods
-    def wakes(&block)
-      Configuration.new(self, &block)
-    end
+  def wakes_value_for(name)
+    instance_eval(&self.class.wakes_configuration.configuration[name])
   end
 
-  class Configuration
-    def initialize(wakeable_klass, &block)
-      @wakeable_klass = wakeable_klass
+  module ClassMethods
+    attr_reader :wakes_configuration
 
-      instance_exec(&block)
+    def wakes(&block)
+      @wakes_configuration = Wakes::Configuration.new(&block)
     end
+  end
+end
 
-    def label(&block)
-      @wakeable_klass.send(:define_method, :wakes_label, &block)
-    end
+class Wakes::Configuration
+  attr_reader :configuration
 
-    def path(&block)
-      @wakeable_klass.send(:define_method, :wakes_path, &block)
-    end
+  def initialize(&block)
+    @configuration = {}
 
-    def dependents(&block)
-      @wakeable_klass.send(:define_method, :wakes_dependents, &block)
-    end
+    instance_exec(&block)
+  end
+
+  def method_missing(name, *args, &block)
+    @configuration[name] = block
   end
 end
