@@ -30,7 +30,13 @@ module Wakeable
   end
 
   def wakes_value_for(name)
-    instance_eval(&self.class.wakes_configuration.configuration[name])
+    value = self.class.wakes_configuration.configuration[name]
+
+    if value.is_a? Proc
+      instance_eval(&value)
+    else
+      self.send(value)
+    end
   end
 
   module ClassMethods
@@ -52,6 +58,6 @@ class Wakes::Configuration
   end
 
   def method_missing(name, *args, &block)
-    @configuration[name] = block
+    @configuration[name] = args.first || block
   end
 end
