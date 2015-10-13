@@ -14,7 +14,7 @@ module Wakeable
     after_update do
       wakes_resource = wakes_resources.first
 
-      if changes.include?('title')
+      if wakes_resource.label != wakes_value_for(:label)
         wakes_resource.update(:label => wakes_value_for(:label))
       end
 
