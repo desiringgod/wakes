@@ -2,9 +2,19 @@ require 'rails_helper'
 
 class WakeableModel < ActiveRecord::Base
   include Wakeable
+  belongs_to :parent, :class_name => 'WakeableModel'
+  has_many :children, :class_name => 'WakeableModel', :foreign_key => :parent_id
+
   wakes do
     label :title
-    path { "/#{title.parameterize}" }
+    dependents :children
+    path do
+      if parent.present?
+        "/#{parent.title.parameterize}/#{title.parameterize}"
+      else
+        "/#{title.parameterize}"
+      end
+    end
   end
 end
 
@@ -49,6 +59,21 @@ describe Wakeable do
 
       expect(instance.wakes_value_for(:some_wakes_config_option)).to eq('my result')
     end
+
+    it 'fails gracefully if value is not defined' do
+      model_class = Class.new(ActiveRecord::Base) do
+        self.table_name = "wakeable_models"
+        def self.name ; "WakeableModel" ; end
+
+        include Wakeable
+        wakes do
+        end
+      end
+
+      instance = model_class.new
+
+      expect(instance.wakes_value_for(:some_wakes_config_option)).to be_nil
+    end
   end
 
   context 'on create' do
@@ -84,6 +109,29 @@ describe Wakeable do
 
       wakes_resource = wakeable.wakes_resources.first
       expect(wakes_resource.label).to eq('Some New Title')
+    end
+
+    it 'creates new canonical locations on parent title change' do
+      parent_wakeable = WakeableModel.create(:title => 'Some Title')
+      child_wakeable_one = WakeableModel.create(:title => 'One', :parent => parent_wakeable)
+      child_wakeable_two = WakeableModel.create(:title => 'Two', :parent => parent_wakeable)
+
+      parent_wakeable.update!(:title => 'Some New Title')
+
+      wakes_resource = parent_wakeable.wakes_resources.first
+      expect(wakes_resource.locations.count).to eq(2)
+      expect(wakes_resource.canonical_location.path).to eq('/some-new-title')
+      expect(wakes_resource.legacy_locations.first.path).to eq('/some-title')
+
+      wakes_resource = child_wakeable_one.wakes_resources.first
+      expect(wakes_resource.locations.count).to eq(2)
+      expect(wakes_resource.canonical_location.path).to eq('/some-new-title/one')
+      expect(wakes_resource.legacy_locations.first.path).to eq('/some-title/one')
+
+      wakes_resource = child_wakeable_two.wakes_resources.first
+      expect(wakes_resource.locations.count).to eq(2)
+      expect(wakes_resource.canonical_location.path).to eq('/some-new-title/two')
+      expect(wakes_resource.legacy_locations.first.path).to eq('/some-title/two')
     end
   end
 end

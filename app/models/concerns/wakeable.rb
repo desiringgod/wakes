@@ -23,19 +23,19 @@ module Wakeable
         wakes_resource.locations.create(:path => wakes_value_for(:path), :canonical => true)
       end
 
-      if respond_to?(:wakes_dependents)
-        wakes_dependents.map(&:save)
+      if (dependents = wakes_value_for(:dependents)).present?
+        dependents.map(&:save)
       end
     end
   end
 
   def wakes_value_for(name)
-    value = self.class.wakes_configuration.configuration[name]
-
-    if value.is_a? Proc
-      instance_eval(&value)
-    else
-      self.send(value)
+    if value = self.class.wakes_configuration.configuration[name]
+      if value.is_a? Proc
+        instance_eval(&value)
+      else
+        self.send(value)
+      end
     end
   end
 
