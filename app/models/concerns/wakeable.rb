@@ -5,25 +5,29 @@ module Wakeable
     has_one :wakes_resource, :class_name => 'Wakes::Resource', :inverse_of => :wakeable, :as => :wakeable
     accepts_nested_attributes_for :wakes_resource
 
-    after_create do
-      wakes_resource = build_wakes_resource(:label => wakes_value_for(:label))
-      wakes_resource.locations.build(:path => wakes_value_for(:path), :canonical => true)
-      wakes_resource.save!
+    after_create :initialize_wakes_graph
+
+    after_update :update_wakes_graph
+  end
+
+  def initialize_wakes_graph
+    wakes_resource = build_wakes_resource(:label => wakes_value_for(:label))
+    wakes_resource.locations.build(:path => wakes_value_for(:path), :canonical => true)
+    wakes_resource.save!
+  end
+
+  def update_wakes_graph
+    if wakes_resource.label != wakes_value_for(:label)
+      wakes_resource.update(:label => wakes_value_for(:label))
     end
 
-    after_update do
-      if wakes_resource.label != wakes_value_for(:label)
-        wakes_resource.update(:label => wakes_value_for(:label))
-      end
+    if wakes_resource.canonical_location.path != wakes_value_for(:path)
+      wakes_resource.locations.update_all(:canonical => false)
+      wakes_resource.locations.create(:path => wakes_value_for(:path), :canonical => true)
+    end
 
-      if wakes_resource.canonical_location.path != wakes_value_for(:path)
-        wakes_resource.locations.update_all(:canonical => false)
-        wakes_resource.locations.create(:path => wakes_value_for(:path), :canonical => true)
-      end
-
-      if (dependents = wakes_value_for(:dependents)).present?
-        dependents.map(&:save)
-      end
+    if (dependents = wakes_value_for(:dependents)).present?
+      dependents.map(&:update_wakes_graph)
     end
   end
 
