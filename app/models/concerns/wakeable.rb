@@ -2,18 +2,16 @@ module Wakeable
   extend ActiveSupport::Concern
 
   included do
-    has_many :wakes_resources, :class_name => 'Wakes::Resource', :inverse_of => :wakeable, :as => :wakeable
-    accepts_nested_attributes_for :wakes_resources
+    has_one :wakes_resource, :class_name => 'Wakes::Resource', :inverse_of => :wakeable, :as => :wakeable
+    accepts_nested_attributes_for :wakes_resource
 
     after_create do
-      wakes_resource = wakes_resources.build(:label => wakes_value_for(:label))
+      wakes_resource = build_wakes_resource(:label => wakes_value_for(:label))
       wakes_resource.locations.build(:path => wakes_value_for(:path), :canonical => true)
       wakes_resource.save!
     end
 
     after_update do
-      wakes_resource = wakes_resources.first
-
       if wakes_resource.label != wakes_value_for(:label)
         wakes_resource.update(:label => wakes_value_for(:label))
       end

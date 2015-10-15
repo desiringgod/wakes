@@ -1,5 +1,7 @@
 RSpec::Matchers.define :have_wakes_graph do |canonical_location:, legacy_locations: []|
   match do |wakes_resource|
+    wakes_resource.reload
+
     expected_location_count = legacy_locations.size
     expected_location_count += 1 if canonical_location.present?
 

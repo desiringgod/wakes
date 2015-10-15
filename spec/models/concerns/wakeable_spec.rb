@@ -85,11 +85,10 @@ describe Wakeable do
       it 'sets up a new Wakes::Resource and Wakes::Location' do
         wakeable = @model_class.create(:title => 'A Wakeable Model')
 
-        wakes_resource = wakeable.wakes_resources.first
-        expect(wakes_resource).to be_a(Wakes::Resource)
-        expect(wakes_resource.label).to eq(wakeable.title)
+        expect(wakeable.wakes_resource).to be_a(Wakes::Resource)
+        expect(wakeable.wakes_resource.label).to eq(wakeable.title)
 
-        wakes_location = wakes_resource.canonical_location
+        wakes_location = wakeable.wakes_resource.canonical_location
         expect(wakes_location).to be_a(Wakes::Location)
         expect(wakes_location.path).to eq('/a-wakeable-model')
       end
@@ -101,7 +100,7 @@ describe Wakeable do
 
         wakeable.update!(:title => 'Some New Title')
 
-        expect(wakeable.wakes_resources.first).to have_wakes_graph(:canonical_location => '/some-new-title', :legacy_locations => ['/some-title'])
+        expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title', :legacy_locations => ['/some-title'])
       end
 
       it 'changes the Wakes::Resource label on title change' do
@@ -109,8 +108,7 @@ describe Wakeable do
 
         wakeable.update!(:title => 'Some New Title')
 
-        wakes_resource = wakeable.wakes_resources.first
-        expect(wakes_resource.label).to eq('Some New Title')
+        expect(wakeable.wakes_resource.label).to eq('Some New Title')
       end
 
       it 'creates new canonical locations on parent title change' do
@@ -120,9 +118,9 @@ describe Wakeable do
 
         parent_wakeable.update!(:title => 'Some New Title')
 
-        expect(parent_wakeable.wakes_resources.first).to have_wakes_graph(:canonical_location => '/some-new-title', :legacy_locations => ['/some-title'])
-        expect(child_wakeable_one.wakes_resources.first).to have_wakes_graph(:canonical_location => '/some-new-title/one', :legacy_locations => ['/some-title/one'])
-        expect(child_wakeable_two.wakes_resources.first).to have_wakes_graph(:canonical_location => '/some-new-title/two', :legacy_locations => ['/some-title/two'])
+        expect(parent_wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title', :legacy_locations => ['/some-title'])
+        expect(child_wakeable_one.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title/one', :legacy_locations => ['/some-title/one'])
+        expect(child_wakeable_two.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title/two', :legacy_locations => ['/some-title/two'])
       end
     end
   end
