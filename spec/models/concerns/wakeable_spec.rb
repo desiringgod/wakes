@@ -14,7 +14,7 @@ def custom_wakeable_class(&block)
   MyClass
 end
 
-describe Wakeable do
+RSpec.describe Wakeable do
   describe 'configuration' do
     it 'accepts a block that is evaluated in the context of the instance' do
       model_class = custom_wakeable_class do

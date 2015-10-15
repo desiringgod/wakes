@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Wakes do
+RSpec.describe Wakes do
   it 'has a version number' do
     expect(Wakes::VERSION).not_to be nil
   end
