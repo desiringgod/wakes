@@ -101,10 +101,7 @@ describe Wakeable do
 
         wakeable.update!(:title => 'Some New Title')
 
-        wakes_resource = wakeable.wakes_resources.first
-        expect(wakes_resource.locations.count).to eq(2)
-        expect(wakes_resource.canonical_location.path).to eq('/some-new-title')
-        expect(wakes_resource.legacy_locations.first.path).to eq('/some-title')
+        expect(wakeable.wakes_resources.first).to have_wakes_graph(:canonical_location => '/some-new-title', :legacy_locations => ['/some-title'])
       end
 
       it 'changes the Wakes::Resource label on title change' do
@@ -123,20 +120,9 @@ describe Wakeable do
 
         parent_wakeable.update!(:title => 'Some New Title')
 
-        wakes_resource = parent_wakeable.wakes_resources.first
-        expect(wakes_resource.locations.count).to eq(2)
-        expect(wakes_resource.canonical_location.path).to eq('/some-new-title')
-        expect(wakes_resource.legacy_locations.first.path).to eq('/some-title')
-
-        wakes_resource = child_wakeable_one.wakes_resources.first
-        expect(wakes_resource.locations.count).to eq(2)
-        expect(wakes_resource.canonical_location.path).to eq('/some-new-title/one')
-        expect(wakes_resource.legacy_locations.first.path).to eq('/some-title/one')
-
-        wakes_resource = child_wakeable_two.wakes_resources.first
-        expect(wakes_resource.locations.count).to eq(2)
-        expect(wakes_resource.canonical_location.path).to eq('/some-new-title/two')
-        expect(wakes_resource.legacy_locations.first.path).to eq('/some-title/two')
+        expect(parent_wakeable.wakes_resources.first).to have_wakes_graph(:canonical_location => '/some-new-title', :legacy_locations => ['/some-title'])
+        expect(child_wakeable_one.wakes_resources.first).to have_wakes_graph(:canonical_location => '/some-new-title/one', :legacy_locations => ['/some-title/one'])
+        expect(child_wakeable_two.wakes_resources.first).to have_wakes_graph(:canonical_location => '/some-new-title/two', :legacy_locations => ['/some-title/two'])
       end
     end
   end
