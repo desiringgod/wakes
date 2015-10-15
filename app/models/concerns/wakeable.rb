@@ -6,7 +6,6 @@ module Wakeable
     accepts_nested_attributes_for :wakes_resource
 
     after_create :initialize_wakes_graph
-
     after_update :update_wakes_graph
   end
 
@@ -16,7 +15,9 @@ module Wakeable
     wakes_resource.save!
   end
 
-  def update_wakes_graph
+  def update_wakes_graph(parent=nil)
+    @parent = parent
+
     if wakes_resource.label != wakes_value_for(:label)
       wakes_resource.update(:label => wakes_value_for(:label))
     end
@@ -27,8 +28,12 @@ module Wakeable
     end
 
     if (dependents = wakes_value_for(:dependents)).present?
-      dependents.map(&:update_wakes_graph)
+      dependents.each { |dependent| dependent.update_wakes_graph(self) }
     end
+  end
+
+  def parent
+    @parent || wakes_value_for(:parent) || super
   end
 
   def wakes_value_for(name)

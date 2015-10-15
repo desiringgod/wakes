@@ -60,6 +60,12 @@ RSpec.describe Wakeable do
     end
   end
 
+  describe 'parent' do
+    it 'uses the passed value when processing dependents'
+    it 'uses the configured value if available and not processing dependents'
+    it 'uses the superclass value if no configured value and not processing dependents'
+  end
+
 
   context 'a fully configured model' do
     before do
