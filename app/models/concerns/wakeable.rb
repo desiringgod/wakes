@@ -10,6 +10,8 @@ module Wakeable
   end
 
   def initialize_wakes_graph
+    return if wakes_value_for(:run_if) == false
+
     wakes_resource = build_wakes_resource(:label => wakes_value_for(:label))
     wakes_resource.locations.build(:path => wakes_value_for(:path), :canonical => true)
     wakes_resource.save!
@@ -17,6 +19,7 @@ module Wakeable
 
   def update_wakes_graph(parent=nil)
     @parent = parent
+    return if wakes_value_for(:run_if) == false
 
     if wakes_resource.label != wakes_value_for(:label)
       wakes_resource.update(:label => wakes_value_for(:label))

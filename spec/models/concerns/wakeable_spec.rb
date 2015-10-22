@@ -66,6 +66,55 @@ RSpec.describe Wakeable do
     it 'uses the superclass value if no configured value and not processing dependents'
   end
 
+  describe 'conditionals' do
+    it 'runs the callbacks if run_if is true' do
+      model_class = custom_wakeable_class do
+        wakes do
+          run_if { true }
+          label :title
+          path { "/#{title.parameterize}" }
+        end
+      end
+
+      wakeable = model_class.create(:title => 'Some Title')
+      expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-title')
+
+      wakeable.update!(:title => 'Some New Title')
+      expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title', :legacy_locations => ['/some-title'])
+    end
+
+    it 'does not run the callbacks if run_if is false' do
+      model_class = custom_wakeable_class do
+        wakes do
+          run_if { false }
+          label :title
+          path { "/#{title.parameterize}" }
+        end
+      end
+
+      wakeable = model_class.create(:title => 'Some Title')
+      expect(wakeable.wakes_resource).to be_nil
+
+      wakeable.update!(:title => 'Some New Title')
+      expect(wakeable.wakes_resource).to be_nil
+
+    end
+    it 'runs the callbacks if run_if is not set' do
+      model_class = custom_wakeable_class do
+        wakes do
+          label :title
+          path { "/#{title.parameterize}" }
+        end
+      end
+
+      wakeable = model_class.create(:title => 'Some Title')
+      expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-title')
+
+      wakeable.update!(:title => 'Some New Title')
+      expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title', :legacy_locations => ['/some-title'])
+    end
+  end
+
 
   context 'a fully configured model' do
     before do
