@@ -66,6 +66,70 @@ RSpec.describe Wakeable do
     it 'uses the superclass value if no configured value and not processing dependents'
   end
 
+  describe 'has_many' do
+    it 'has_one by default' do
+      model_class = custom_wakeable_class do
+        wakes do
+          label :title
+          path { "/#{title.parameterize}" }
+        end
+      end
+
+      wakeable = model_class.create(:title => 'Some Title')
+      expect(wakeable).to respond_to(:wakes_resource)
+    end
+
+    context 'has_many specified' do
+      before do
+        @model_class = custom_wakeable_class do
+          wakes do
+            has_many do
+              [
+                {
+                  :label => 'One',
+                  :identifier => 'one',
+                  :path_fragment => 'one'
+                },
+                {
+                  :label => 'Two',
+                  :identifier => 'two',
+                  :path_fragment => 'two'
+                }
+              ]
+            end
+            label { "#{has_many_label} #{title}" }
+            path { "/#{has_many_path}/#{title.parameterize}" }
+          end
+        end
+      end
+
+      describe 'on create' do
+        it 'sets up the new Wakes::Resource and Wakes::Location' do
+          wakeable = @model_class.create(:title => 'A Wakeable Model')
+
+          expect(wakeable.wakes_resources.first).to be_a(Wakes::Resource)
+          expect(wakeable.wakes_resources.pluck(:label)).to include('One A Wakeable Model', 'Two A Wakeable Model')
+          expect(wakeable.wakes_resources.map(&:locations).map(&:first).map(&:path)).to include('/one/a-wakeable-model', '/two/a-wakeable-model')
+        end
+      end
+
+      describe 'on update' do
+        it 'creates new canonical locations on path change' do
+          wakeable = @model_class.create(:title => 'Some Title')
+
+          wakeable.update!(:title => 'Some New Title')
+
+          one = wakeable.wakes_resources.find_by(:identifier => 'one')
+          expect(one).to have_wakes_graph(:canonical_location => '/one/some-new-title', :legacy_locations => ['/one/some-title'])
+
+          two = wakeable.wakes_resources.find_by(:identifier => 'two')
+          expect(two).to have_wakes_graph(:canonical_location => '/two/some-new-title', :legacy_locations => ['/two/some-title'])
+        end
+      end
+    end
+
+  end
+
   describe 'conditionals' do
     it 'runs the callbacks if run_if is true' do
       model_class = custom_wakeable_class do

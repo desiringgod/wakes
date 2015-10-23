@@ -3,6 +3,7 @@ class CreateWakesResources < ActiveRecord::Migration
     create_table :wakes_resources do |t|
       t.string :label
       t.references :wakeable, :polymorphic => true
+      t.string :identifier
 
       t.timestamps null: false
     end
