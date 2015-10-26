@@ -15,9 +15,9 @@ module Wakes
     'wakes_'
   end
 
-  def self.create(label:, wakeable: nil, path:)
+  def self.create(label:, wakeable: nil, path:, identifier: nil)
     logger.debug { "Creating wake for #{label} at #{path}" }
-    resource = Wakes::Resource.new(:label => label, :wakeable => wakeable)
+    resource = Wakes::Resource.new(:label => label, :wakeable => wakeable, :identifier => identifier)
     resource.locations.build(:path => path, :canonical => true)
     resource.save!
   end
