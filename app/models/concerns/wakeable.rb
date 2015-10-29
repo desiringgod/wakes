@@ -106,7 +106,7 @@ class Wakes::Configuration
   class UnrecognizedConfigurationOption < StandardError ; end
   attr_reader :configuration
 
-  OPTIONS = [:has_many, :path, :label, :run_if, :dependents, :parent]
+  OPTIONS = [:has_many, :path, :label, :run_if, :dependents, :parent, :debug]
 
   def initialize(&block)
     @configuration = {}
