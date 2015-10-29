@@ -20,8 +20,7 @@ module Wakeable
     end
   end
 
-  def update_wakes_graph(parent=nil)
-    @parent = parent
+  def update_wakes_graph
     return if wakes_value_for(:run_if) == false
 
     if associated_options = wakes_value_for(:has_many)
@@ -52,12 +51,12 @@ module Wakeable
     end
 
     if (dependents = wakes_value_for(:dependents)).present?
-      dependents.each { |dependent| dependent.update_wakes_graph(self) }
+      dependents.each(&:update_wakes_graph)
     end
   end
 
   def parent
-    @parent || wakes_value_for(:parent) || super
+    wakes_value_for(:parent) || super
   end
 
   def wakes_value_for(name)
