@@ -55,10 +55,6 @@ module Wakeable
     end
   end
 
-  def parent
-    wakes_value_for(:parent) || super
-  end
-
   def wakes_value_for(name)
     if value = self.class.wakes_configuration.configuration[name]
       if value.is_a? Proc
@@ -105,7 +101,7 @@ class Wakes::Configuration
   class UnrecognizedConfigurationOption < StandardError ; end
   attr_reader :configuration
 
-  OPTIONS = [:has_many, :path, :label, :run_if, :dependents, :parent, :debug]
+  OPTIONS = [:has_many, :path, :label, :run_if, :dependents, :debug]
 
   def initialize(&block)
     @configuration = {}
