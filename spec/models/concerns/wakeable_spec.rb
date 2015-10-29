@@ -19,7 +19,7 @@ RSpec.describe Wakeable do
     it 'accepts a block that is evaluated in the context of the instance' do
       model_class = custom_wakeable_class do
         wakes do
-          some_wakes_config_option { my_method }
+          label { my_method }
         end
 
         def my_method
@@ -29,13 +29,13 @@ RSpec.describe Wakeable do
 
       instance = model_class.new
 
-      expect(instance.wakes_value_for(:some_wakes_config_option)).to eq('my result')
+      expect(instance.wakes_value_for(:label)).to eq('my result')
     end
 
     it 'accepts a method name that is sent to the instance' do
       model_class = custom_wakeable_class do
         wakes do
-          some_wakes_config_option :my_method
+          label :my_method
         end
 
         def my_method
@@ -45,7 +45,7 @@ RSpec.describe Wakeable do
 
       instance = model_class.new
 
-      expect(instance.wakes_value_for(:some_wakes_config_option)).to eq('my result')
+      expect(instance.wakes_value_for(:label)).to eq('my result')
     end
 
     it 'fails gracefully if value is not defined' do
@@ -56,7 +56,17 @@ RSpec.describe Wakeable do
 
       instance = model_class.new
 
-      expect(instance.wakes_value_for(:some_wakes_config_option)).to be_nil
+      expect(instance.wakes_value_for(:label)).to be_nil
+    end
+
+    it 'raises an error if the configuration option is not recognized' do
+      expect do
+        custom_wakeable_class do
+          wakes do
+            some_unrecognized_option { true }
+          end
+        end
+      end.to raise_error(Wakes::Configuration::UnrecognizedConfigurationOption)
     end
   end
 
