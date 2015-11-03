@@ -23,10 +23,10 @@ module Wakes
   end
 
   def self.create(*args)
-    build(*args).save
+    build(*args).tap(&:save)
   end
 
   def self.create!(*args)
-    build(*args).save!
+    build(*args).tap(&:save!)
   end
 end

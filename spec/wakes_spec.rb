@@ -26,17 +26,13 @@ RSpec.describe Wakes do
 
     describe '::create' do
       context 'with good input' do
-        before do
-          @wakes_resource_creation = Wakes.create(:label => 'Some Label', :wakeable => wakeable, :path => '/some/path', :identifier => 'some-identifier')
-        end
+        let(:wakes_resource) { Wakes.create(:label => 'Some Label', :wakeable => wakeable, :path => '/some/path', :identifier => 'some-identifier') }
 
-        it 'returns true' do
-          expect(@wakes_resource_creation).to eq(true)
+        it 'is persisted' do
+          expect(wakes_resource).to be_persisted
         end
 
         it 'creates the Wakes::Resource' do
-          wakes_resource = Wakes::Resource.last
-
           expect(wakes_resource.label).to eq('Some Label')
           expect(wakes_resource.wakeable).to eq(wakeable)
           expect(wakes_resource.identifier).to eq('some-identifier')
@@ -45,33 +41,28 @@ RSpec.describe Wakes do
       end
 
       context 'with bad input' do
-        before do
-          @wakes_resource_creation = Wakes.create(:label => 'Some Label', :wakeable => wakeable, :path => 'some/path', :identifier => 'some-identifier')
+        let(:wakes_resource) { Wakes.create(:label => 'Some Label', :wakeable => wakeable, :path => 'some/path', :identifier => 'some-identifier') }
+
+        it 'is not persisted' do
+          expect(wakes_resource).to_not be_persisted
         end
 
-        it 'returns false' do
-          expect(@wakes_resource_creation).to eq(false)
-        end
-
-        it 'creates no Wakes::Resource' do
-          expect(Wakes::Resource.last).to be_nil
+        it 'has errors and is not valid' do
+          expect(wakes_resource).to_not be_valid
+          expect(wakes_resource.errors.count).to eq 1
         end
       end
     end
 
     describe '::create!' do
       context 'with good input' do
-        before do
-          @wakes_resource_creation = Wakes.create!(:label => 'Some Label', :wakeable => wakeable, :path => '/some/path', :identifier => 'some-identifier')
-        end
+        let(:wakes_resource) { Wakes.create!(:label => 'Some Label', :wakeable => wakeable, :path => '/some/path', :identifier => 'some-identifier') }
 
-        it 'returns true' do
-          expect(@wakes_resource_creation).to eq(true)
+        it 'is persisted' do
+          expect(wakes_resource).to be_persisted
         end
 
         it 'creates the Wakes::Resource' do
-          wakes_resource = Wakes::Resource.last
-
           expect(wakes_resource.label).to eq('Some Label')
           expect(wakes_resource.wakeable).to eq(wakeable)
           expect(wakes_resource.identifier).to eq('some-identifier')
