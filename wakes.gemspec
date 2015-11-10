@@ -39,4 +39,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "database_cleaner"
   spec.add_development_dependency "combustion"
   spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "guard-rubocop"
 end
