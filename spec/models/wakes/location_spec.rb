@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Wakes::Location, type: :model do
+RSpec.describe Wakes::Location, :type => :model do
   describe '#path' do
     it 'must begin with a slash (/)' do
       expect(build(:location, :path => 'some/path')).to_not be_valid

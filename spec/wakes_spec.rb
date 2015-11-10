@@ -13,9 +13,14 @@ RSpec.describe Wakes do
     let(:wakeable) { WakeableModel.new }
 
     describe '::build' do
-      it 'returns an unpersisted Wakes::Resource' do
-        wakes_resource = Wakes.build(:label => 'Some Label', :wakeable => wakeable, :path => '/some/path', :identifier => 'some-identifier')
+      let(:wakes_resource) do
+        Wakes.build(:label => 'Some Label',
+                    :wakeable => wakeable,
+                    :path => '/some/path',
+                    :identifier => 'some-identifier')
+      end
 
+      it 'returns an unpersisted Wakes::Resource' do
         expect(wakes_resource).to_not be_persisted
         expect(wakes_resource.label).to eq('Some Label')
         expect(wakes_resource.wakeable).to eq(wakeable)
@@ -26,7 +31,12 @@ RSpec.describe Wakes do
 
     describe '::create' do
       context 'with good input' do
-        let(:wakes_resource) { Wakes.create(:label => 'Some Label', :wakeable => wakeable, :path => '/some/path', :identifier => 'some-identifier') }
+        let(:wakes_resource) do
+          Wakes.create(:label => 'Some Label',
+                       :wakeable => wakeable,
+                       :path => '/some/path',
+                       :identifier => 'some-identifier')
+        end
 
         it 'is persisted' do
           expect(wakes_resource).to be_persisted
@@ -41,7 +51,12 @@ RSpec.describe Wakes do
       end
 
       context 'with bad input' do
-        let(:wakes_resource) { Wakes.create(:label => 'Some Label', :wakeable => wakeable, :path => 'some/path', :identifier => 'some-identifier') }
+        let(:wakes_resource) do
+          Wakes.create(:label => 'Some Label',
+                       :wakeable => wakeable,
+                       :path => 'some/path',
+                       :identifier => 'some-identifier')
+        end
 
         it 'is not persisted' do
           expect(wakes_resource).to_not be_persisted
@@ -56,7 +71,12 @@ RSpec.describe Wakes do
 
     describe '::create!' do
       context 'with good input' do
-        let(:wakes_resource) { Wakes.create!(:label => 'Some Label', :wakeable => wakeable, :path => '/some/path', :identifier => 'some-identifier') }
+        let(:wakes_resource) do
+          Wakes.create!(:label => 'Some Label',
+                        :wakeable => wakeable,
+                        :path => '/some/path',
+                        :identifier => 'some-identifier')
+        end
 
         it 'is persisted' do
           expect(wakes_resource).to be_persisted
@@ -73,7 +93,10 @@ RSpec.describe Wakes do
       context 'with bad input' do
         it 'raises an error and creates no Wakes::Resource' do
           expect do
-            Wakes.create!(:label => 'Some Label', :wakeable => wakeable, :path => 'some/path', :identifier => 'some-identifier')
+            Wakes.create!(:label => 'Some Label',
+                          :wakeable => wakeable,
+                          :path => 'some/path',
+                          :identifier => 'some-identifier')
           end.to raise_error(ActiveRecord::RecordInvalid)
 
           expect(Wakes::Resource.last).to be_nil

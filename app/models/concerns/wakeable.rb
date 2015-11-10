@@ -60,7 +60,7 @@ module Wakeable
       if value.is_a? Proc
         instance_eval(&value)
       else
-        self.send(value)
+        send(value)
       end
     end
   end
@@ -73,7 +73,7 @@ module Wakeable
         if value.is_a? Proc
           instance_eval(&value)
         else
-          self.send(value)
+          send(value)
         end
       end
     end
@@ -98,7 +98,7 @@ module Wakeable
 end
 
 class Wakes::Configuration
-  class UnrecognizedConfigurationOption < StandardError ; end
+  class UnrecognizedConfigurationOption < StandardError; end
   attr_reader :configuration
 
   OPTIONS = [:has_many, :path, :label, :run_if, :dependents, :debug]
@@ -113,7 +113,8 @@ class Wakes::Configuration
     if OPTIONS.include?(name)
       @configuration[name] = args.first || block
     else
-      raise UnrecognizedConfigurationOption, "Unrecognized configuration option #{name}. Allowed options are #{OPTIONS.to_sentence}."
+      raise UnrecognizedConfigurationOption,
+            "Unrecognized configuration option #{name}. Allowed options are #{OPTIONS.to_sentence}."
     end
   end
 end
