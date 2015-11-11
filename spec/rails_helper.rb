@@ -5,7 +5,7 @@ require 'combustion'
 Combustion.initialize! :all
 
 # Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
+abort('The Rails environment is running in production mode!') if Rails.env.production?
 
 require 'spec_helper'
 require 'rspec/rails'

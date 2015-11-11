@@ -1,6 +1,7 @@
-require "rails/engine"
-require "wakes/version"
-require "wakes/engine"
+require 'rails/engine'
+require 'wakes/version'
+require 'wakes/engine'
+require 'wakes/configuration'
 
 module Wakes
   def self.logger
