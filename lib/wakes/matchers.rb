@@ -11,7 +11,9 @@ RSpec::Matchers.define :have_wakes_graph do |canonical_location:, legacy_locatio
   end
 
   failure_message do |wakes_resource|
-    message = "Expected canonical location \"#{canonical_location}\", got canonical location \"#{wakes_resource.canonical_location.path}\"\n"
-    message + "Expected legacy locations #{legacy_locations.sort}, got legacy locations #{wakes_resource.legacy_locations.pluck(:path).sort}"
+    message = "Expected canonical location \"#{canonical_location}\","
+    message += "got canonical location \"#{wakes_resource.canonical_location.path}\"\n"
+    message += "Expected legacy locations #{legacy_locations.sort}, "
+    message + "got legacy locations #{wakes_resource.legacy_locations.pluck(:path).sort}"
   end
 end

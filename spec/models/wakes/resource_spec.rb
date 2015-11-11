@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Wakes::Resource, type: :model do
+RSpec.describe Wakes::Resource, :type => :model do
   it 'has a label' do
     expect(build(:resource, :label => 'Some Label').label).to eq('Some Label')
   end
@@ -52,7 +52,13 @@ RSpec.describe Wakes::Resource, type: :model do
         bad_resource = create(:resource, :locations => [location_one, location_two])
         expect(bad_resource).to_not be_valid
 
-        bad_resource = create(:resource, :locations => [location_one, location_two, canonical_location_one, canonical_location_two])
+        bad_resource = create(:resource,
+                              :locations => [
+                                location_one,
+                                location_two,
+                                canonical_location_one,
+                                canonical_location_two
+                              ])
         expect(bad_resource).to_not be_valid
 
         good_resource = create(:resource, :locations => [location_one, location_two, canonical_location_one])
