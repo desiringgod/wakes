@@ -26,7 +26,7 @@ module Wakeable
 
   def update_dependents
     if (dependents = wakes_value_for(:dependents)).present?
-      dependents.each(&:update_wakes_graph)
+      dependents.select(&:wakes_enabled?).each(&:update_wakes_graph)
     end
   end
 

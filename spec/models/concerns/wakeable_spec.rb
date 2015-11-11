@@ -5,13 +5,9 @@ class WakeableModel < ActiveRecord::Base
 end
 
 def custom_wakeable_class(&block)
-  if defined?(MyClass)
-    Object.send(:remove_const, :MyClass)
-  end
-
-  Object.const_set('MyClass', Class.new(WakeableModel))
-  MyClass.class_eval(&block)
-  MyClass
+  klass = Object.const_set("MyClass#{Time.now.subsec.numerator}", Class.new(WakeableModel))
+  klass.class_eval(&block)
+  klass
 end
 
 RSpec.describe Wakeable do
@@ -84,8 +80,8 @@ RSpec.describe Wakeable do
     end
 
     context 'has_many specified' do
-      before do
-        @model_class = custom_wakeable_class do
+      let(:model_class) do
+        custom_wakeable_class do
           wakes do
             has_many do
               [
@@ -109,7 +105,7 @@ RSpec.describe Wakeable do
 
       describe 'on create' do
         it 'sets up the new Wakes::Resource and Wakes::Location' do
-          wakeable = @model_class.create(:title => 'A Wakeable Model')
+          wakeable = model_class.create(:title => 'A Wakeable Model')
 
           expect(wakeable.wakes_resources.first).to be_a(Wakes::Resource)
           expect(wakeable.wakes_resources.pluck(:label)).to include('One A Wakeable Model', 'Two A Wakeable Model')
@@ -120,7 +116,7 @@ RSpec.describe Wakeable do
 
       describe 'on update' do
         it 'creates new canonical locations on path change' do
-          wakeable = @model_class.create(:title => 'Some Title')
+          wakeable = model_class.create(:title => 'Some Title')
 
           wakeable.update!(:title => 'Some New Title')
 
@@ -169,6 +165,7 @@ RSpec.describe Wakeable do
       wakeable.update!(:title => 'Some New Title')
       expect(wakeable.wakes_resource).to be_nil
     end
+
     it 'runs the callbacks if run_if is not set' do
       model_class = custom_wakeable_class do
         wakes do
@@ -184,11 +181,47 @@ RSpec.describe Wakeable do
       expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title',
                                                           :legacy_locations => ['/some-title'])
     end
+
+    it 'properly gates dependents' do
+      model_class = custom_wakeable_class do
+        belongs_to :parent, :class_name => name
+        has_many :children, :class_name => name, :foreign_key => :parent_id
+
+        wakes do
+          run_if do
+            title != 'Disabled'
+          end
+          label :title
+          dependents :children
+          path do
+            if parent.present?
+              "/#{parent.title.parameterize}/#{title.parameterize}"
+            else
+              "/#{title.parameterize}"
+            end
+          end
+        end
+      end
+
+      parent_wakeable = model_class.create(:title => 'Some Title')
+      enabled_child = model_class.create(:title => 'Enabled', :parent => parent_wakeable)
+      disabled_child = model_class.create(:title => 'Disabled', :parent => parent_wakeable)
+
+      expect(parent_wakeable.wakes_resource).to be_present
+      expect(enabled_child.wakes_resource).to be_present
+      expect(disabled_child.wakes_resource).to_not be_present
+
+      parent_wakeable.update!(:title => 'Some New Title')
+
+      expect(parent_wakeable.reload.wakes_resource).to be_present
+      expect(enabled_child.reload.wakes_resource).to be_present
+      expect(disabled_child.reload.wakes_resource).to_not be_present
+    end
   end
 
   context 'a fully configured model' do
-    before do
-      @model_class = custom_wakeable_class do
+    let(:model_class) do
+      custom_wakeable_class do
         belongs_to :parent, :class_name => name
         has_many :children, :class_name => name, :foreign_key => :parent_id
 
@@ -208,7 +241,7 @@ RSpec.describe Wakeable do
 
     describe 'on create' do
       it 'sets up a new Wakes::Resource and Wakes::Location' do
-        wakeable = @model_class.create(:title => 'A Wakeable Model')
+        wakeable = model_class.create(:title => 'A Wakeable Model')
 
         expect(wakeable.wakes_resource).to be_a(Wakes::Resource)
         expect(wakeable.wakes_resource.label).to eq(wakeable.title)
@@ -221,7 +254,7 @@ RSpec.describe Wakeable do
 
     describe 'on update' do
       it 'creates a new canonical location on path change' do
-        wakeable = @model_class.create(:title => 'Some Title')
+        wakeable = model_class.create(:title => 'Some Title')
 
         wakeable.update!(:title => 'Some New Title')
 
@@ -230,7 +263,7 @@ RSpec.describe Wakeable do
       end
 
       it 'changes the Wakes::Resource label on title change' do
-        wakeable = @model_class.create(:title => 'Some Title')
+        wakeable = model_class.create(:title => 'Some Title')
 
         wakeable.update!(:title => 'Some New Title')
 
@@ -238,9 +271,9 @@ RSpec.describe Wakeable do
       end
 
       it 'creates new canonical locations on parent title change' do
-        parent_wakeable = @model_class.create(:title => 'Some Title')
-        child_wakeable_one = @model_class.create(:title => 'One', :parent => parent_wakeable)
-        child_wakeable_two = @model_class.create(:title => 'Two', :parent => parent_wakeable)
+        parent_wakeable = model_class.create(:title => 'Some Title')
+        child_wakeable_one = model_class.create(:title => 'One', :parent => parent_wakeable)
+        child_wakeable_two = model_class.create(:title => 'Two', :parent => parent_wakeable)
 
         parent_wakeable.update!(:title => 'Some New Title')
 
