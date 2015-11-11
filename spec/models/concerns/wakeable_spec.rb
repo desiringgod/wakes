@@ -181,6 +181,42 @@ RSpec.describe Wakeable do
       expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title',
                                                           :legacy_locations => ['/some-title'])
     end
+
+    it 'properly gates dependents' do
+      model_class = custom_wakeable_class do
+        belongs_to :parent, :class_name => name
+        has_many :children, :class_name => name, :foreign_key => :parent_id
+
+        wakes do
+          run_if do
+            title != 'Disabled'
+          end
+          label :title
+          dependents :children
+          path do
+            if parent.present?
+              "/#{parent.title.parameterize}/#{title.parameterize}"
+            else
+              "/#{title.parameterize}"
+            end
+          end
+        end
+      end
+
+      parent_wakeable = model_class.create(:title => 'Some Title')
+      enabled_child = model_class.create(:title => 'Enabled', :parent => parent_wakeable)
+      disabled_child = model_class.create(:title => 'Disabled', :parent => parent_wakeable)
+
+      expect(parent_wakeable.wakes_resource).to be_present
+      expect(enabled_child.wakes_resource).to be_present
+      expect(disabled_child.wakes_resource).to_not be_present
+
+      parent_wakeable.update!(:title => 'Some New Title')
+
+      expect(parent_wakeable.reload.wakes_resource).to be_present
+      expect(enabled_child.reload.wakes_resource).to be_present
+      expect(disabled_child.reload.wakes_resource).to_not be_present
+    end
   end
 
   context 'a fully configured model' do
