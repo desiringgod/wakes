@@ -7,8 +7,14 @@ Combustion.initialize! :all
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 
+env_file = File.join(Wakes::Engine.root, 'local_env.yml')
+YAML.load(File.open(env_file)).each do |key, value|
+  ENV[key.to_s] = value
+end if File.exist?(env_file)
+
 require 'spec_helper'
 require 'rspec/rails'
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
