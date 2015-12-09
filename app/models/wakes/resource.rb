@@ -14,6 +14,8 @@ class Wakes::Resource < ActiveRecord::Base
     validate :only_one_location_is_canonical
   end
 
+  store_accessor :document, :pageview_count
+
   private
 
   def one_location_is_canonical
