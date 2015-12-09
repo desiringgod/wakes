@@ -7,7 +7,7 @@ class Wakes::PageviewCountUpdaterService
 
   def update_pageview_count
     if pageviews_since_last_update > 0
-      update_location_pageview_count && update_resource_aggregate_count
+      update_location_pageview_count && update_resource_aggregate_count && update_wakeable_aggregate_count
     else
       false
     end
@@ -24,8 +24,16 @@ class Wakes::PageviewCountUpdaterService
 
   def update_resource_aggregate_count
     resource = location.resource
-    aggregate_count = resource.locations.sum("COALESCE((wakes_locations.document ->> 'pageview_count')::int, 0)")
-    resource.update(:pageview_count => aggregate_count)
+    count = resource.locations.sum("COALESCE((wakes_locations.document ->> 'pageview_count')::int, 0)")
+    resource.update(:pageview_count => count)
+  end
+
+  def update_wakeable_aggregate_count
+    return true unless wakeable = location.resource.wakeable
+    return true unless wakeable.respond_to?(:pageview_count=)
+
+    count = wakeable.raw_aggregate_pageview_count
+    wakeable.update(:pageview_count => count)
   end
 
   private

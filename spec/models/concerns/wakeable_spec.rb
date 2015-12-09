@@ -122,6 +122,52 @@ RSpec.describe Wakeable do
     end
   end
 
+  describe '#raw_aggregate_pageview_count' do
+    it 'returns the count from the one resource if there is just one' do
+      model_class = custom_wakeable_class do
+        wakes do
+          label :title
+          path { "/#{title.parameterize}" }
+        end
+      end
+
+      wakeable = model_class.create(:title => 'Some Title')
+
+      wakeable.wakes_resource.update(:pageview_count => 3)
+
+      expect(wakeable.raw_aggregate_pageview_count).to eq(3)
+    end
+
+    it 'adds up all the resources if there are multiple' do
+      model_class = custom_wakeable_class do
+        wakes do
+          has_many do
+            [
+              {
+                :label => 'One',
+                :identifier => 'one',
+                :path_fragment => 'one'
+              },
+              {
+                :label => 'Two',
+                :identifier => 'two',
+                :path_fragment => 'two'
+              }
+            ]
+          end
+          label { "#{has_many_label} #{title}" }
+          path { "/#{has_many_path}/#{title.parameterize}" }
+        end
+      end
+      wakeable = model_class.create(:title => 'A Wakeable Model')
+
+      wakeable.wakes_resources.first.update(:pageview_count => 3)
+      wakeable.wakes_resources.last.update(:pageview_count => 4)
+
+      expect(wakeable.raw_aggregate_pageview_count).to eq(7)
+    end
+  end
+
   describe 'conditionals' do
     it 'runs the callbacks if run_if is true' do
       model_class = custom_wakeable_class do

@@ -7,6 +7,11 @@ module Wakeable
       accepts_nested_attributes_for :wakes_resource
     end
 
+    def raw_aggregate_pageview_count
+      wakes_resource.reload
+      wakes_resource.pageview_count
+    end
+
     def initialize_wakes_graph
       wakes_resource = build_wakes_resource(:label => wakes_value_for(:label))
       wakes_resource.locations.build(:path => wakes_value_for(:path), :canonical => true)
