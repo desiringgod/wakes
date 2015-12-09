@@ -17,3 +17,4 @@ spec/internal/tmp/
 spec/internal/.sass-cache
 spec/examples.txt
 local_env.yml
+.byebug_history
