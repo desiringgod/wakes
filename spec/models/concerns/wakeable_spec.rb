@@ -1,15 +1,5 @@
 require 'rails_helper'
 
-class WakeableModel < ActiveRecord::Base
-  include Wakeable
-end
-
-def custom_wakeable_class(&block)
-  klass = Object.const_set("MyClass#{Time.now.subsec.numerator}", Class.new(WakeableModel))
-  klass.class_eval(&block)
-  klass
-end
-
 RSpec.describe Wakeable do
   describe 'configuration' do
     it 'accepts a block that is evaluated in the context of the instance' do
