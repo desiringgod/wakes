@@ -22,6 +22,11 @@ class Wakes::PageviewCountUpdaterService
                     :pageview_count_updated_through => end_date)
   end
 
+  # If a resource's locations differ only by their query string, then this method will not work because
+  # of the way the GA regex is working. The old code handled this case. It is not yet certain whether
+  # we need wakes to handle it as well, because of how wakes stores its paths.
+  #
+  # This is the core of the old logic: https://gist.github.com/benhutton/c685aa1f8942553a9745
   def update_resource_aggregate_count
     resource = location.resource
     count = resource.locations.sum("COALESCE((wakes_locations.document ->> 'pageview_count')::int, 0)")
