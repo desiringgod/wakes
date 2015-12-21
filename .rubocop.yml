@@ -181,3 +181,4 @@ Style/Next:
 # Keep things fitting nicely on github
 Metrics/LineLength:
   Max: 116
+  AllowURI: true

@@ -27,17 +27,19 @@ Gem::Specification.new do |spec|
   spec.test_files = Dir['spec/**/*']
 
   spec.add_dependency 'rails', '~> 4.2.4'
+  spec.add_dependency 'google-api-client'
 
-  spec.add_development_dependency 'bundler', '~> 1.10'
-  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec-rails'
   spec.add_development_dependency 'rspec_junit_formatter'
   spec.add_development_dependency 'factory_girl_rails'
   spec.add_development_dependency 'guard'
   spec.add_development_dependency 'guard-rspec'
-  spec.add_development_dependency 'sqlite3'
+  spec.add_development_dependency 'pg'
   spec.add_development_dependency 'database_cleaner'
   spec.add_development_dependency 'combustion'
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'guard-rubocop'
+  spec.add_development_dependency 'timecop'
 end

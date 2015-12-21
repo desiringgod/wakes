@@ -1,4 +1,6 @@
 class Wakes::Location < ActiveRecord::Base
+  include Wakes::Metrics::GoogleAnalyticsPageviews
+
   validates :path, :format => { :with => %r{\A\/} }, :uniqueness => true
   belongs_to :resource, :foreign_key => :wakes_resource_id, :inverse_of => :locations
 
