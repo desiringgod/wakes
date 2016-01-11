@@ -1,5 +1,8 @@
 module Wakeable
   extend ActiveSupport::Concern
+  included do
+    class_attribute :wakes_configuration
+  end
 
   def wakes_value_for(name)
     if value = self.class.wakes_configuration.configuration[name]
@@ -35,8 +38,6 @@ module Wakeable
   end
 
   module ClassMethods
-    attr_reader :wakes_configuration
-
     def wakes_value_for(name)
       if value = wakes_configuration.configuration[name]
         if value.is_a? Proc
@@ -48,7 +49,7 @@ module Wakeable
     end
 
     def wakes(&block)
-      @wakes_configuration = Wakes::Configuration.new(&block)
+      self.wakes_configuration = Wakes::Configuration.new(&block)
 
       include wakes_value_for(:has_many) ? Wakeable::HasMany : Wakeable::HasOne
 
