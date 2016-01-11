@@ -38,8 +38,8 @@ class Wakes::GoogleAnalyticsApiWrapper
       :api_method => api.data.ga.get,
       :parameters => {
         'ids' => "ga:#{ENV['GOOGLE_ANALYTICS_PROFILE_ID']}",
-        'start-date' => start_date.to_s,
-        'end-date' => end_date.to_s,
+        'start-date' => format_date(start_date),
+        'end-date' => format_date(end_date),
         'metrics' => 'ga:pageviews',
         'dimensions' => 'ga:pagePath',
         'filters' => PrepareFiltersForGAPagePath.new(path).filters,
@@ -107,6 +107,10 @@ class Wakes::GoogleAnalyticsApiWrapper
     when 'User Rate Limit Exceeded' then raise UserRateLimitExceededError
     else raise message
     end
+  end
+
+  def format_date(date)
+    date.to_date.to_s
   end
 
   class DailyLimitExceededError < StandardError; end
