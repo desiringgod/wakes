@@ -122,6 +122,106 @@ RSpec.describe Wakeable do
     end
   end
 
+  describe 'inheritance' do
+    context 'parent has wakes and child does not' do
+      let!(:parent_model_class) do
+        custom_wakeable_class do
+          wakes do
+            label :title
+            path { "/#{title.parameterize}" }
+          end
+        end
+      end
+
+      let!(:child_model_class) do
+        custom_wakeable_class(parent_model_class) do
+        end
+      end
+
+      it 'applies the parent configuration to the child' do
+        wakeable = child_model_class.create(:title => 'A Wakeable Model')
+
+        expect(wakeable.wakes_resource).to be_a(Wakes::Resource)
+        expect(wakeable.wakes_resource.label).to eq('A Wakeable Model')
+        expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/a-wakeable-model')
+      end
+
+      it 'applies the parent configuration to the parent' do
+        wakeable = parent_model_class.create(:title => 'A Wakeable Model')
+
+        expect(wakeable.wakes_resource).to be_a(Wakes::Resource)
+        expect(wakeable.wakes_resource.label).to eq('A Wakeable Model')
+        expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/a-wakeable-model')
+      end
+    end
+
+    context 'parent and child both have wakes' do
+      let!(:parent_model_class) do
+        custom_wakeable_class do
+          wakes do
+            label { "Parent #{title}" }
+            path { "/parent/#{title.parameterize}" }
+          end
+        end
+      end
+
+      let!(:child_model_class) do
+        custom_wakeable_class(parent_model_class) do
+          wakes do
+            label { "Child #{title}" }
+            path { "/child/#{title.parameterize}" }
+          end
+        end
+      end
+
+      it 'applies the child configuration to the child' do
+        wakeable = child_model_class.create(:title => 'A Wakeable Model')
+
+        expect(wakeable.wakes_resource).to be_a(Wakes::Resource)
+        expect(wakeable.wakes_resource.label).to eq('Child A Wakeable Model')
+        expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/child/a-wakeable-model')
+      end
+
+      it 'applies the parent configuration to the parent' do
+        wakeable = parent_model_class.create(:title => 'A Wakeable Model')
+
+        expect(wakeable.wakes_resource).to be_a(Wakes::Resource)
+        expect(wakeable.wakes_resource.label).to eq('Parent A Wakeable Model')
+        expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/parent/a-wakeable-model')
+      end
+    end
+
+    context 'child has wakes and parent does not' do
+      let!(:parent_model_class) do
+        custom_wakeable_class do
+        end
+      end
+
+      let!(:child_model_class) do
+        custom_wakeable_class(parent_model_class) do
+          wakes do
+            label :title
+            path { "/#{title.parameterize}" }
+          end
+        end
+      end
+
+      it 'applies the child configuration to the child' do
+        wakeable = child_model_class.create(:title => 'A Wakeable Model')
+
+        expect(wakeable.wakes_resource).to be_a(Wakes::Resource)
+        expect(wakeable.wakes_resource.label).to eq('A Wakeable Model')
+        expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/a-wakeable-model')
+      end
+
+      it 'applies no configuration to the parent' do
+        wakeable = parent_model_class.create(:title => 'A Wakeable Model')
+
+        expect(wakeable).to_not respond_to(:wakes_resource)
+      end
+    end
+  end
+
   describe '#raw_aggregate_pageview_count' do
     it 'returns the count from the one resource if there is just one' do
       model_class = custom_wakeable_class do
