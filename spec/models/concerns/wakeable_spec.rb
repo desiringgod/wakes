@@ -118,6 +118,21 @@ RSpec.describe Wakeable do
           expect(two).to have_wakes_graph(:canonical_location => '/two/some-new-title',
                                           :legacy_locations => ['/two/some-title'])
         end
+
+        it 'initializes a new wakes graph if for some reason none exists' do
+          wakeable = model_class.create(:title => 'Some Title')
+          wakeable.wakes_resources.destroy_all
+
+          wakeable.reload
+
+          wakeable.update!(:title => 'Some New Title')
+
+          one = wakeable.wakes_resources.find_by(:identifier => 'one')
+          expect(one).to have_wakes_graph(:canonical_location => '/one/some-new-title')
+
+          two = wakeable.wakes_resources.find_by(:identifier => 'two')
+          expect(two).to have_wakes_graph(:canonical_location => '/two/some-new-title')
+        end
       end
     end
   end
@@ -419,6 +434,17 @@ RSpec.describe Wakeable do
                                                                       :legacy_locations => ['/some-title/one'])
         expect(child_wakeable_two.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title/two',
                                                                       :legacy_locations => ['/some-title/two'])
+      end
+
+      it 'initializes a new wakes graph if for some reason none exists' do
+        wakeable = model_class.create(:title => 'Some Title')
+        wakeable.wakes_resource.destroy
+
+        wakeable.reload
+
+        wakeable.update!(:title => 'Some New Title')
+
+        expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title')
       end
     end
   end

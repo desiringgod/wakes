@@ -26,6 +26,7 @@ module Wakeable
     end
 
     def update_wakes_graph
+      return initialize_wakes_graph unless wakes_resources.present?
       wakes_value_for(:has_many).each do |options|
         self.has_many_label = options[:label]
         self.has_many_path = options[:path_fragment]
