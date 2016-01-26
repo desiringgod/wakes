@@ -43,7 +43,7 @@ class Wakes::GoogleAnalyticsApiWrapper
         'metrics' => 'ga:pageviews',
         'dimensions' => 'ga:pagePath',
         'filters' => PrepareFiltersForGAPagePath.new(path).filters,
-        'sort' => '-ga:pageviews',
+        'sort' => '-ga:pageviews'
       }
     )
     result.data.totals_for_all_results['ga:pageviews'].to_i
