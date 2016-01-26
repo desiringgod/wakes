@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.test_files = Dir['spec/**/*']
 
   spec.add_dependency 'rails', '~> 4.2.4'
-  spec.add_dependency 'google-api-client'
+  spec.add_dependency 'google-api-client', '< 0.9'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
