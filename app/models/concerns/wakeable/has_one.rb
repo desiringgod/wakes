@@ -19,6 +19,7 @@ module Wakeable
     end
 
     def update_wakes_graph
+      return initialize_wakes_graph unless wakes_resource.present?
       update_wakes_resource_label(wakes_resource)
       update_wakes_resource_canonical_location(wakes_resource)
       update_dependents
