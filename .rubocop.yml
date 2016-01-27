@@ -13,6 +13,7 @@ AllCops:
     - 'script/**/*'
     - 'vendor/**/*'
     - 'bin/**/*'
+  TargetRubyVersion: 2.3
 
 Style/HashSyntax:
   Description: >-
@@ -146,13 +147,25 @@ Style/PredicateName:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark'
   Enabled: false
 
-# Disabling this allows for the use of a comma after the last element in an array.
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
-Style/TrailingComma:
-  Description: 'Checks for trailing comma in parameter lists and literals.'
+Style/TrailingCommaInArguments:
+  # If `comma`, the cop requires a comma after the last argument, but only for
+  # parenthesized method calls where each argument is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last argument,
+  # for all parenthesized method calls with arguments.
+  Description: 'Checks for trailing comma in argument lists.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
-  Enabled: false
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
+
+Style/TrailingCommaInLiteral:
+  # If `comma`, the cop requires a comma after the last item in an array or
+  # hash, but only when each item is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all
+  # non-empty array and hash literals.
+  Description: 'Checks for trailing comma in array and hash literals.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
 
 # Enabling this makes smaller arrays not very reable.
 # It might be possible to get a good balance by tweaking MinSize

@@ -45,7 +45,7 @@ guard :rspec, :cmd => 'bin/rspec' do
   dsl.watch_spec_files_for(rails.app_files)
 end
 
-guard :rubocop, :run_on_modifications => true, :run_on_additions => true, :all_on_start =>  false do
+guard :rubocop, :run_on_modifications => true, :run_on_additions => true, :all_on_start => false do
   watch('.rubocop.yml') { '.' }
   watch(/^(.+)\.rb$/)
 end

@@ -2,7 +2,7 @@ class Wakes::Configuration
   class UnrecognizedConfigurationOption < StandardError; end
   attr_reader :configuration
 
-  OPTIONS = [:has_many, :path, :label, :run_if, :dependents, :debug]
+  OPTIONS = [:has_many, :path, :label, :run_if, :dependents, :debug].freeze
 
   def initialize(&block)
     @configuration = {}
