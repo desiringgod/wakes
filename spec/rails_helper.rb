@@ -3,7 +3,9 @@
 ENV['RAILS_ENV'] ||= 'test'
 
 require 'combustion'
-Combustion.initialize! :all
+Combustion.initialize! :all do
+  config.middleware.use 'Wakes::Middleware::Redirector'
+end
 
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
@@ -64,4 +66,8 @@ RSpec.configure do |config|
   # The different available types are documented in the features, such as in
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
+
+  config.before(:each) do
+    Wakes.destroy_redis_graph
+  end
 end
