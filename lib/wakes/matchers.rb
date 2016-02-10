@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec::Matchers.define :have_wakes_graph do |canonical_location:, legacy_locations: []|
   match do |wakes_resource|
     wakes_resource.reload
