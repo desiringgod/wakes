@@ -1,55 +1,35 @@
 # frozen_string_literal: true
-require 'google/api_client'
+require 'googleauth'
+require 'google/apis/analytics_v3'
 
 class Wakes::GoogleAnalyticsApiWrapper
-  def initialize
-    authenticate!
-  end
-
-  def authenticate!
-    @authentication_token ||= client.authorization = Signet::OAuth2::Client.new(
-      :token_credential_uri => 'https://accounts.google.com/o/oauth2/token',
-      :audience             => 'https://accounts.google.com/o/oauth2/token',
-      :scope                => 'https://www.googleapis.com/auth/analytics.readonly',
-      :issuer               => ENV['GOOGLE_API_CLIENT_EMAIL'],
-      :signing_key          => OpenSSL::PKey::RSA.new(ENV['GOOGLE_API_PRIVATE_KEY'], 'notasecret'),
-      :retries              => 3
-    ).tap(&:fetch_access_token!)
-  end
-
-  def client
-    @client ||= Google::APIClient.new(:application_name => 'Wakes Metrics', :application_version => Wakes::VERSION)
-  end
-
-  def api
-    @api ||= client.discovered_api('analytics', 'v3')
-  end
-
-  def execute(request_hash)
-    response = client.execute! request_hash
-    handle_error(response.error_message) if response.error?
-    response
-  end
+  AUTHORIZATION_SCOPE = 'https://www.googleapis.com/auth/analytics.readonly'
 
   # More precisely, this sums up the pageviews for this particular path and
   # any other paths with query strings
-  # rubocop:disable Metrics/MethodLength
   def get_pageviews_for_path(path, start_date:, end_date:)
-    result = execute(
-      :api_method => api.data.ga.get,
-      :parameters => {
-        'ids' => "ga:#{ENV['GOOGLE_ANALYTICS_PROFILE_ID']}",
-        'start-date' => format_date(start_date),
-        'end-date' => format_date(end_date),
-        'metrics' => 'ga:pageviews',
-        'dimensions' => 'ga:pagePath',
-        'filters' => PrepareFiltersForGAPagePath.new(path).filters,
-        'sort' => '-ga:pageviews'
-      }
-    )
-    result.data.totals_for_all_results['ga:pageviews'].to_i
+    authorized_analytics_service.get_ga_data(
+      "ga:#{ENV['GOOGLE_ANALYTICS_PROFILE_ID']}",
+      format_date(start_date),
+      format_date(end_date),
+      'ga:pageviews',
+      :dimensions => 'ga:pagePath',
+      :filters => PrepareFiltersForGAPagePath.new(path).filters,
+      :sort => '-ga:pageviews'
+    ).totals_for_all_results['ga:pageviews'].to_i
   end
-  # rubocop:enable Metrics/MethodLength
+
+  private
+
+  def authorized_analytics_service
+    @service ||= Google::Apis::AnalyticsV3::AnalyticsService.new.tap do |analytics|
+      analytics.authorization = credentials
+    end
+  end
+
+  def credentials
+    @credentials ||= Google::Auth::ServiceAccountCredentials.from_env(AUTHORIZATION_SCOPE)
+  end
 
   class PrepareFiltersForGAPagePath
     attr_accessor :path
@@ -100,22 +80,7 @@ class Wakes::GoogleAnalyticsApiWrapper
     end
   end
 
-  def handle_error(message)
-    case message
-    when 'There was an internal error' then raise InternalError
-    when 'There was a temporary error. Please try again later.' then raise TemporaryError
-    when 'Daily Limit Exceeded' then raise DailyLimitExceededError
-    when 'User Rate Limit Exceeded' then raise UserRateLimitExceededError
-    else raise message
-    end
-  end
-
   def format_date(date)
     date.to_date.to_s
   end
-
-  class DailyLimitExceededError < StandardError; end
-  class UserRateLimitExceededError < StandardError; end
-  class InternalError < StandardError; end
-  class TemporaryError < StandardError; end
 end

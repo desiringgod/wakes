@@ -30,56 +30,6 @@ RSpec.describe Wakes::GoogleAnalyticsApiWrapper do
       end
     end
   end
-
-  describe 'error handling' do
-    before do
-      expect_any_instance_of(Wakes::GoogleAnalyticsApiWrapper).to receive(:authenticate!) # skip authentication
-    end
-
-    def mock_error_message(wrapper, message)
-      error_double = double(:execute! => double(:error? => true, :error_message => message))
-      expect(wrapper).to receive(:client).once.and_return(error_double)
-    end
-
-    describe 'daily rate limit' do
-      it 'tries once and raises, meaning no retry' do
-        mock_error_message(subject, 'Daily Limit Exceeded')
-        expect do
-          subject.send(:execute, nil)
-        end.to raise_error(Wakes::GoogleAnalyticsApiWrapper::DailyLimitExceededError)
-      end
-    end
-
-    describe 'user concurrency limit' do
-      it 'tries once and raises, meaning no retry' do
-        mock_error_message(subject, 'User Rate Limit Exceeded')
-        expect do
-          subject.send(:execute, nil)
-        end.to raise_error(Wakes::GoogleAnalyticsApiWrapper::UserRateLimitExceededError)
-      end
-    end
-
-    describe 'internal error' do
-      it 'tries three times, and still raises, meaning the retry block is working' do
-        mock_error_message(subject, 'There was an internal error')
-        expect { subject.send(:execute, nil) }.to raise_error(Wakes::GoogleAnalyticsApiWrapper::InternalError)
-      end
-    end
-
-    describe 'temporary error' do
-      it 'tries three times, and still raises, meaning the retry block is working' do
-        mock_error_message(subject, 'There was a temporary error. Please try again later.')
-        expect { subject.send(:execute, nil) }.to raise_error(Wakes::GoogleAnalyticsApiWrapper::TemporaryError)
-      end
-    end
-
-    describe 'other error' do
-      it 'tries once and raises, meaning no retry' do
-        mock_error_message(subject, 'Some Other Error')
-        expect { subject.send(:execute, nil) }.to raise_error(RuntimeError).with_message('Some Other Error')
-      end
-    end
-  end
 end
 
 RSpec.describe Wakes::GoogleAnalyticsApiWrapper::PrepareFiltersForGAPagePath do
