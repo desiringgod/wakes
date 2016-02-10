@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'google/api_client'
 
 class Wakes::GoogleAnalyticsApiWrapper

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Wakes::PageviewCountUpdaterService
   def initialize(location)
     @location = location

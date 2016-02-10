@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Wakes::Configuration
   class UnrecognizedConfigurationOption < StandardError; end
   attr_reader :configuration

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Wakes::Location < ActiveRecord::Base
   include Wakes::Metrics::GoogleAnalyticsPageviews
 
