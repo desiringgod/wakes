@@ -3,6 +3,7 @@ require 'rails/engine'
 require 'wakes/version'
 require 'wakes/engine'
 require 'wakes/configuration'
+require 'wakes/redirect_mapper'
 
 module Wakes
   def self.logger
@@ -30,5 +31,9 @@ module Wakes
 
   def self.create!(*args)
     build(*args).tap(&:save!)
+  end
+
+  def self.redirect(source, target, label = nil)
+    RedirectMapper.redirect(source, target, label)
   end
 end
