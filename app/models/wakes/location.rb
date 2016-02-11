@@ -11,4 +11,8 @@ class Wakes::Location < ActiveRecord::Base
   def label
     path
   end
+
+  def url(protocol: 'http', host: ENV['DEFAULT_HOST'])
+    "#{protocol}://#{host}#{path}"
+  end
 end
