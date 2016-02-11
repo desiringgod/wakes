@@ -4,7 +4,11 @@ module Wakeable
     extend ActiveSupport::Concern
 
     included do
-      has_one :wakes_resource, :class_name => 'Wakes::Resource', :inverse_of => :wakeable, :as => :wakeable
+      has_one :wakes_resource,
+              :class_name => 'Wakes::Resource',
+              :inverse_of => :wakeable,
+              :as => :wakeable,
+              :dependent => :destroy
       accepts_nested_attributes_for :wakes_resource
     end
 

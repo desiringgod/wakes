@@ -448,5 +448,21 @@ RSpec.describe Wakeable do
         expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title')
       end
     end
+
+    describe 'on destroy' do
+      it 'destroys the wakes resource and wakes locations' do
+        wakeable = model_class.create(:title => 'Some Title')
+        resource = wakeable.wakes_resource
+        location = resource.canonical_location
+
+        expect(resource).to be_a(Wakes::Resource)
+        expect(location).to be_a(Wakes::Location)
+
+        wakeable.destroy
+
+        expect(Wakes::Resource.find_by(:id => resource.id)).to be_nil
+        expect(Wakes::Location.find_by(:id => location.id)).to be_nil
+      end
+    end
   end
 end
