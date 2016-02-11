@@ -34,6 +34,13 @@ module Wakeable
     end
   end
 
+  def update_facebook_count
+    # facebook_count needs to be defined in the app database.
+    return false unless respond_to?(:facebook_count=)
+    self.facebook_count = raw_aggregate_facebook_count
+    save!
+  end
+
   def wakes_enabled?
     wakes_value_for(:run_if) != false
   end

@@ -4,5 +4,6 @@ ActiveRecord::Schema.define do
     t.string 'title'
     t.integer 'parent_id'
     t.integer 'pageview_count'
+    t.integer 'facebook_count'
   end
 end
