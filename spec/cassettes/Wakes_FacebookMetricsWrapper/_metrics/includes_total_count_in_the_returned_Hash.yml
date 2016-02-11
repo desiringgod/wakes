@@ -1,0 +1,52 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.facebook.com/method/fql.query?format=json&query=select%20commentsbox_count,%20%20%20%20%20click_count,%20%20%20%20%20total_count,%20%20%20%20%20comment_count,%20%20%20%20%20like_count,%20%20%20%20%20share_count%20%20%20%20%20from%20link_stat%20%20%20%20%20where%20url=%22http://www.example.com%22
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json
+      X-Fb-Trace-Id:
+      - ENolWs18NU/
+      X-Fb-Rev:
+      - '2187935'
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - private, no-cache, no-store, must-revalidate
+      Facebook-Api-Version:
+      - v2.0
+      Expires:
+      - Sat, 01 Jan 2000 00:00:00 GMT
+      Vary:
+      - Accept-Encoding
+      X-Fb-Debug:
+      - VIh4XO5ZNSZ/57S7TH2QPGt9QGtovR8YYNyK1vMbKcOo0QFplIKvi7BTXdGWjbKGaouQ8zrzKFGWmR0lGyTBeQ==
+      Date:
+      - Thu, 18 Feb 2016 19:59:38 GMT
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '110'
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"commentsbox_count":453,"click_count":11,"total_count":14600717,"comment_count":103655,"like_count":1117478,"share_count":13379584}]'
+    http_version: 
+  recorded_at: Thu, 18 Feb 2016 19:59:38 GMT
+recorded_with: VCR 3.0.1

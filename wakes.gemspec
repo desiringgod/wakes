@@ -29,6 +29,9 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'rails', '~> 4.2.4'
   spec.add_dependency 'google-api-client'
+  spec.add_dependency 'httparty', '~> 0.13'
+  spec.add_dependency 'vcr', '~> 3.0'
+  spec.add_dependency 'webmock', '~> 1.23'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
