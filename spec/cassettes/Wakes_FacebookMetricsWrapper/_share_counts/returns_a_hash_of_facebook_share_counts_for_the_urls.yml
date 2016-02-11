@@ -1,0 +1,58 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://graph.facebook.com/v2.5
+    body:
+      encoding: UTF-8
+      string: batch=%5B%7B%22method%22%3A%22GET%22%2C%22relative_url%22%3A%22%3Fid%3Dhttp%3A%2F%2Fwww.example.com%22%7D%2C%7B%22method%22%3A%22GET%22%2C%22relative_url%22%3A%22%3Fid%3Dhttp%3A%2F%2Fwww.example.org%22%7D%5D&access_token=&include_headers=false
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      X-Fb-Trace-Id:
+      - FeOSiesdN7w
+      X-Fb-Rev:
+      - '2233316'
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - private, no-cache, no-store, must-revalidate
+      Facebook-Api-Version:
+      - v2.5
+      Expires:
+      - Sat, 01 Jan 2000 00:00:00 GMT
+      Vary:
+      - Accept-Encoding
+      X-Fb-Debug:
+      - cBK7CVKTvm4v/NtZ9s3aP+TfPNUzG/zvbwB/Y5KepN5sbp8q8jNsz8RdLBdkISProQhcgSrVdXIVknP6iyep1A==
+      Date:
+      - Wed, 16 Mar 2016 17:18:42 GMT
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '374'
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"code":200,"body":"{\"og_object\":{\"id\":\"395320319544\",\"description\":\"This
+        domain is established to be used for illustrative examples in documents. You
+        may use this domain in examples without prior coordination or asking for permission.\",\"title\":\"Example
+        Domain\",\"type\":\"website\",\"updated_time\":\"2016-03-16T16:20:44+0000\",\"url\":\"http:\\\/\\\/www.example.com\\\/\"},\"share\":{\"comment_count\":25,\"share_count\":14607817},\"id\":\"http:\\\/\\\/www.example.com\"}"},{"code":200,"body":"{\"og_object\":{\"id\":\"10150286660055425\",\"description\":\"This
+        domain is established to be used for illustrative examples in documents. You
+        may use this domain in examples without prior coordination or asking for permission.\",\"title\":\"Example
+        Domain\",\"type\":\"website\",\"updated_time\":\"2016-03-10T04:42:20+0000\",\"url\":\"http:\\\/\\\/example.org\\\/\"},\"share\":{\"comment_count\":3,\"share_count\":6373},\"id\":\"http:\\\/\\\/www.example.org\"}"}]'
+    http_version: 
+  recorded_at: Wed, 16 Mar 2016 17:18:43 GMT
+recorded_with: VCR 3.0.1

@@ -17,6 +17,8 @@ end if File.exist?(env_file)
 
 require 'spec_helper'
 require 'rspec/rails'
+require 'vcr'
+require 'webmock/rspec'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
