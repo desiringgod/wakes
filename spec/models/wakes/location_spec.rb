@@ -21,4 +21,33 @@ RSpec.describe Wakes::Location, :type => :model do
 
     expect(location.resource).to eq(resource)
   end
+
+  describe '#url' do
+    subject(:location) { build(:location) }
+
+    it 'returns the url generated from the path from wakes location' do
+      expect(location.url).to include(location.path)
+    end
+
+    it 'picks the host from the argument passed to it' do
+      expect(location.url(:host => 'awesome.domain')).to include('awesome.domain')
+    end
+
+    it 'defaults to the DEFAULT_HOST environment variable if no argument is passed to it' do
+      previous_value = ENV['DEFAULT_HOST']
+      ENV['DEFAULT_HOST'] = 'default.host'
+
+      expect(location.url).to include('default.host')
+
+      ENV['DEFAULT_HOST'] = previous_value
+    end
+
+    it 'picks the protocol from the protocol argument passed to it' do
+      expect(location.url(:protocol => 'https')).to start_with('https://')
+    end
+
+    it 'defaults to the http protocol' do
+      expect(location.url).to start_with('http://')
+    end
+  end
 end
