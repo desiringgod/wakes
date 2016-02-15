@@ -65,6 +65,7 @@ module Wakes
       old_resource.locations.each do |location|
         location.update_attributes(:canonical => false, :resource => resource)
       end
+      old_resource.reload
       old_resource.destroy
     end
 
