@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Wakes::Resource < ActiveRecord::Base
   with_options :class_name => 'Wakes::Location', :foreign_key => :wakes_resource_id, :inverse_of => :resource do
-    has_many :locations
+    has_many :locations, :dependent => :destroy
     has_one :canonical_location, -> { canonical }
     has_many :legacy_locations, -> { legacy }
   end
