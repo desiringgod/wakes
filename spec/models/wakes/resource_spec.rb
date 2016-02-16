@@ -8,8 +8,8 @@ RSpec.describe Wakes::Resource, :type => :model do
 
   describe 'locations' do
     it 'has many locations' do
-      location_one = create(:location)
-      location_two = create(:location)
+      location_one = build(:location)
+      location_two = build(:location)
 
       resource = create(:resource, :locations => [location_one, location_two])
 
@@ -17,8 +17,8 @@ RSpec.describe Wakes::Resource, :type => :model do
     end
 
     it 'has one canonical location' do
-      location_one = create(:location, :canonical => true)
-      location_two = create(:location, :canonical => false)
+      location_one = build(:location, :canonical => true)
+      location_two = build(:location, :canonical => false)
 
       resource = create(:resource, :locations => [location_one, location_two])
 
@@ -26,44 +26,55 @@ RSpec.describe Wakes::Resource, :type => :model do
     end
 
     it 'has many legacy locations' do
-      location_one = create(:location, :canonical => true)
-      location_two = create(:location, :canonical => false)
-      location_three = create(:location, :canonical => false)
+      location_one = build(:location, :canonical => true)
+      location_two = build(:location, :canonical => false)
+      location_three = build(:location, :canonical => false)
 
       resource = create(:resource, :locations => [location_one, location_two, location_three])
 
+      resource.reload
       expect(resource.legacy_locations).to contain_exactly(location_two, location_three)
     end
 
     describe 'canonical locations' do
-      it 'if there is one location, it must be canonical' do
-        bad_resource = create(:resource, :locations => [create(:location, :canonical => false)])
-        expect(bad_resource).to_not be_valid
+      let(:resource) { create(:resource) }
 
-        good_resource = create(:resource, :locations => [create(:location, :canonical => true)])
-        expect(good_resource).to be_valid
+      context 'one location' do
+        it 'must not be noncanonical' do
+          create(:location, :canonical => false, :resource => resource)
+          resource.reload
+          expect(resource).to_not be_valid
+        end
+        it 'must be canonical' do
+          create(:location, :canonical => true, :resource => resource)
+          resource.reload
+          expect(resource).to be_valid
+        end
       end
 
-      it 'if there is more than one location, one and only one must be canonical' do
-        location_one = create(:location, :canonical => false)
-        location_two = create(:location, :canonical => false)
-        canonical_location_one = create(:location, :canonical => true)
-        canonical_location_two = create(:location, :canonical => true)
+      context 'more than one location' do
+        it 'must have one canonical location' do
+          create(:location, :canonical => false, :resource => resource)
+          create(:location, :canonical => true, :resource => resource)
+          resource.reload
+          expect(resource).to be_valid
+        end
 
-        bad_resource = create(:resource, :locations => [location_one, location_two])
-        expect(bad_resource).to_not be_valid
+        it 'must not have no canonical locations' do
+          create(:location, :canonical => false, :resource => resource)
+          create(:location, :canonical => false, :resource => resource)
+          resource.reload
+          expect(resource).to_not be_valid
+        end
 
-        bad_resource = create(:resource,
-                              :locations => [
-                                location_one,
-                                location_two,
-                                canonical_location_one,
-                                canonical_location_two
-                              ])
-        expect(bad_resource).to_not be_valid
-
-        good_resource = create(:resource, :locations => [location_one, location_two, canonical_location_one])
-        expect(good_resource).to be_valid
+        it 'must not have two canonical locations' do
+          create(:location, :canonical => false, :resource => resource)
+          create(:location, :canonical => false, :resource => resource)
+          create(:location, :canonical => true, :resource => resource)
+          create(:location, :canonical => true, :resource => resource)
+          resource.reload
+          expect(resource).to_not be_valid
+        end
       end
     end
   end
