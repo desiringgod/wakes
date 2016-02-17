@@ -19,6 +19,13 @@ class Wakes::Resource < ActiveRecord::Base
 
   store_accessor :document, :pageview_count
 
+  def to_s
+    <<-EOS
+  \e[33m(#{id}) #{label}\e[0m
+    #{legacy_locations.pluck(:path).join(', ').presence || '[]'} ----> #{canonical_location.path}
+    EOS
+  end
+
   private
 
   def one_location_is_canonical
