@@ -19,6 +19,8 @@ class Wakes::Resource < ActiveRecord::Base
 
   store_accessor :document, :pageview_count
 
+  validates :label, :presence => true
+
   def to_s
     <<-EOS
   \e[33m(#{id}) #{label}\e[0m

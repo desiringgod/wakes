@@ -77,7 +77,7 @@ RSpec.describe Wakes::RedirectMapper do
         let!(:target) { create(:location, :canonical => false, :path => '/target', :resource => resource) }
 
         it 'sets them up on a new resource' do
-          described_class.redirect '/source', '/target'
+          described_class.redirect '/source', '/target', 'New Label'
 
           expect(resource).to have_wakes_graph(:canonical_location => '/other')
           expect(Wakes::Location.find_by(:path => '/target').resource)
@@ -159,7 +159,7 @@ RSpec.describe Wakes::RedirectMapper do
         let!(:target) { create(:location, :canonical => false, :path => '/target', :resource => target_resource) }
 
         it 'creates a new resource with the source to target redirect set up' do
-          described_class.redirect '/source', '/target'
+          described_class.redirect '/source', '/target', 'New Label'
 
           expect(source_resource).to have_wakes_graph(:canonical_location => '/other-on-source')
           expect(target_resource).to have_wakes_graph(:canonical_location => '/other-on-target')
@@ -172,7 +172,7 @@ RSpec.describe Wakes::RedirectMapper do
 
   context 'neither target nor source exist' do
     it 'creates a new resource' do
-      described_class.redirect '/source', '/target'
+      described_class.redirect '/source', '/target', 'New Label'
 
       expect(Wakes::Location.find_by(:path => '/target').resource)
         .to have_wakes_graph(:canonical_location => '/target', :legacy_locations => ['/source'])
