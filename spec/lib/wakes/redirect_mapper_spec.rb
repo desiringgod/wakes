@@ -2,9 +2,9 @@
 require 'rails_helper'
 
 RSpec.describe Wakes::RedirectMapper do
-  let!(:resource) { create(:resource) }
-
   context 'target exists and source does not' do
+    let!(:resource) { create(:resource, :label => 'Only Resource') }
+
     context 'target is canonical' do
       let!(:target) { create(:location, :canonical => true, :path => '/target', :resource => resource) }
 
@@ -17,6 +17,8 @@ RSpec.describe Wakes::RedirectMapper do
   end
 
   context 'source exists and target does not' do
+    let!(:resource) { create(:resource, :label => 'Only Resource') }
+
     context 'source is canonical' do
       let!(:other) { create(:location, :canonical => false, :path => '/other', :resource => resource) }
       let!(:source) { create(:location, :canonical => true, :path => '/source', :resource => resource) }
@@ -45,6 +47,8 @@ RSpec.describe Wakes::RedirectMapper do
 
   context 'target and source exist' do
     context 'on the same resource' do
+      let!(:resource) { create(:resource, :label => 'Only Resource') }
+
       context 'target is canonical and source is not' do
         let!(:target) { create(:location, :canonical => true, :path => '/target', :resource => resource) }
         let!(:source) { create(:location, :canonical => false, :path => '/source', :resource => resource) }
@@ -83,8 +87,8 @@ RSpec.describe Wakes::RedirectMapper do
     end
 
     context 'on different resources' do
-      let!(:source_resource) { create(:resource) }
-      let!(:target_resource) { create(:resource) }
+      let!(:source_resource) { create(:resource, :label => 'Source Resource') }
+      let!(:target_resource) { create(:resource, :label => 'Target Resource') }
 
       context 'target and source are both canonical' do
         let!(:other_on_source) do

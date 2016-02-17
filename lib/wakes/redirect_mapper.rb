@@ -13,7 +13,16 @@ module Wakes
       @label = label
       puts "Redirecting from #{source} to #{target}"
 
+      print_graph('Starting graph')
       both_present || target_present || source_present || none_present
+      print_graph('Ending graph')
+    end
+
+    def print_graph(notice)
+      puts "\e[35m#{notice}\e[0m"
+      Wakes::Resource.find_each do |resource|
+        puts resource.to_s
+      end
     end
 
     def target_location
