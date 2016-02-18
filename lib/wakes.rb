@@ -55,4 +55,25 @@ module Wakes
       resource.update_attribute(:legacy_paths_in_redis, nil)
     end
   end
+
+  COLORS = {
+    :black => "\e[30m",
+    :red => "\e[31m",
+    :green => "\e[32m",
+    :yellow => "\e[33m",
+    :blue => "\e[34m",
+    :magenta => "\e[35m",
+    :cyan => "\e[36m",
+    :white => "\e[37m"
+  }.freeze
+
+  def self.color(color, string, bold:false)
+    bold = bold ? "\e[1m" : ''
+
+    if color = COLORS[color.to_sym]
+      "#{bold}#{color}#{string}\e[0m"
+    else
+      string
+    end
+  end
 end

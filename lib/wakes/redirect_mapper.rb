@@ -7,7 +7,7 @@ module Wakes
       @source = source
       @target = target
       @label = label
-      puts "\e[37mRedirecting from #{source} to #{target}\e[0m"
+      puts Wakes.color(:white, "Redirecting from #{source} to #{target}", :bold => true)
 
       print_graph('Starting graph')
       both_present || target_present || source_present || none_present
@@ -18,7 +18,7 @@ module Wakes
     private
 
     def print_graph(notice)
-      puts "\e[35m#{notice}\e[0m"
+      puts Wakes.color(:magenta, notice)
 
       Wakes::Resource.where(:id => resources_affected).each do |resource|
         puts resource.to_s
