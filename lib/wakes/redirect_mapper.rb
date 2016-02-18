@@ -3,26 +3,33 @@ module Wakes
   class RedirectMapper
     attr_accessor :source, :target, :label
 
-    def self.redirect(source, target, label = nil)
-      new(source, target, label)
-    end
-
     def initialize(source, target, label = nil)
       @source = source
       @target = target
       @label = label
-      puts "Redirecting from #{source} to #{target}"
+      puts "\e[37mRedirecting from #{source} to #{target}\e[0m"
 
       print_graph('Starting graph')
       both_present || target_present || source_present || none_present
       print_graph('Ending graph')
+      puts ''
     end
+
+    private
 
     def print_graph(notice)
       puts "\e[35m#{notice}\e[0m"
-      Wakes::Resource.find_each do |resource|
+
+      Wakes::Resource.where(:id => resources_affected).each do |resource|
         puts resource.to_s
       end
+    end
+
+    def resources_affected
+      @resources_affected ||= []
+      @resources_affected << source_location.wakes_resource_id if source_location.present?
+      @resources_affected << target_location.wakes_resource_id if target_location.present?
+      @resources_affected
     end
 
     def target_location

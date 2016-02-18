@@ -40,7 +40,7 @@ module Wakes
   end
 
   def self.redirect(source, target, label = nil)
-    RedirectMapper.redirect(source, target, label)
+    RedirectMapper.new(source, target, label)
   end
 
   def self.create_redis_graph
