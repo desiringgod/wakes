@@ -102,7 +102,7 @@ RSpec.describe Wakes::Resource, :type => :model do
 
         expect(resource.to_s).to eq(<<-EOS)
   \e[33m(#{resource.id}) Test Resource\e[0m
-    /source1 ----> /target
+    [/source1] ----> /target
         EOS
       end
 
@@ -117,7 +117,7 @@ RSpec.describe Wakes::Resource, :type => :model do
 
         expect(resource.to_s).to eq(<<-EOS)
   \e[33m(#{resource.id}) Test Resource\e[0m
-    /source1, /source2 ----> /target
+    [/source1, /source2] ----> /target
         EOS
       end
     end

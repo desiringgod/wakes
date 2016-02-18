@@ -24,7 +24,7 @@ class Wakes::Resource < ActiveRecord::Base
   def to_s
     <<-EOS
   \e[33m(#{id}) #{label}\e[0m
-    #{legacy_locations.pluck(:path).join(', ').presence || '[]'} ----> #{canonical_location.path}
+    [#{legacy_locations.pluck(:path).join(', ')}] ----> #{canonical_location.path}
     EOS
   end
 
