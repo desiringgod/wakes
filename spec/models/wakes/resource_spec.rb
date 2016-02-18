@@ -77,5 +77,49 @@ RSpec.describe Wakes::Resource, :type => :model do
         end
       end
     end
+
+    describe '#to_s' do
+      it 'with no legacy locations' do
+        location_one = build(:location, :path => '/target', :canonical => true)
+
+        resource = create(:resource,
+                          :label => 'Test Resource',
+                          :locations => [location_one])
+
+        expect(resource.to_s).to eq(<<-EOS)
+  \e[33m(#{resource.id}) Test Resource\e[0m
+    [] ----> /target
+        EOS
+      end
+
+      it 'with 1 legacy location' do
+        location_one = build(:location, :path => '/target', :canonical => true)
+        location_two = build(:location, :path => '/source1', :canonical => false)
+
+        resource = create(:resource,
+                          :label => 'Test Resource',
+                          :locations => [location_one, location_two])
+
+        expect(resource.to_s).to eq(<<-EOS)
+  \e[33m(#{resource.id}) Test Resource\e[0m
+    [/source1] ----> /target
+        EOS
+      end
+
+      it 'with 2 legacy locations' do
+        location_one = build(:location, :path => '/target', :canonical => true)
+        location_two = build(:location, :path => '/source1', :canonical => false)
+        location_three = build(:location, :path => '/source2', :canonical => false)
+
+        resource = create(:resource,
+                          :label => 'Test Resource',
+                          :locations => [location_one, location_two, location_three])
+
+        expect(resource.to_s).to eq(<<-EOS)
+  \e[33m(#{resource.id}) Test Resource\e[0m
+    [/source1, /source2] ----> /target
+        EOS
+      end
+    end
   end
 end

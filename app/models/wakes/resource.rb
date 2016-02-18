@@ -19,6 +19,15 @@ class Wakes::Resource < ActiveRecord::Base
 
   store_accessor :document, :pageview_count
 
+  validates :label, :presence => true
+
+  def to_s
+    <<-EOS
+  #{Wakes.color(:yellow, "(#{id}) #{label}")}
+    [#{legacy_locations.pluck(:path).join(', ')}] ----> #{canonical_location.path}
+    EOS
+  end
+
   private
 
   def one_location_is_canonical
