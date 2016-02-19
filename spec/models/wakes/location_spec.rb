@@ -2,6 +2,29 @@
 require 'rails_helper'
 
 RSpec.describe Wakes::Location, :type => :model do
+  describe '::find_by_url' do
+    let!(:location) { create(:location, :path => '/articles') }
+
+    it 'returns the location when the path matches the path of a location and host matches the default host' do
+      using_default_host('my.host') do
+        expect(described_class.find_by_url('http://my.host/articles')).to eq location
+      end
+    end
+
+    it 'ignores the host if the DEFAULT_HOST environment variable is not set' do
+      using_default_host(nil) do
+        expect(described_class.find_by_url('http://my.host/articles')).to eq location
+      end
+    end
+
+    it 'returns ActiveRecord::RecordNotFound error if path does not match' do
+      using_default_host('my.host') do
+        expect { described_class.find_by_url('http://another.host/articles') }
+          .to raise_error Wakes::Location::HostMismatchError
+      end
+    end
+  end
+
   describe '#path' do
     it 'must begin with a slash (/)' do
       expect(build(:location, :path => 'some/path')).to_not be_valid
@@ -34,12 +57,9 @@ RSpec.describe Wakes::Location, :type => :model do
     end
 
     it 'defaults to the DEFAULT_HOST environment variable if no argument is passed to it' do
-      previous_value = ENV['DEFAULT_HOST']
-      ENV['DEFAULT_HOST'] = 'default.host'
-
-      expect(location.url).to include('default.host')
-
-      ENV['DEFAULT_HOST'] = previous_value
+      using_default_host('default.host') do
+        expect(location.url).to include('default.host')
+      end
     end
 
     it 'picks the protocol from the protocol argument passed to it' do
@@ -49,5 +69,12 @@ RSpec.describe Wakes::Location, :type => :model do
     it 'defaults to the http protocol' do
       expect(location.url).to start_with('http://')
     end
+  end
+
+  def using_default_host(host)
+    previous_value = ENV['DEFAULT_HOST']
+    ENV['DEFAULT_HOST'] = host
+    yield
+    ENV['DEFAULT_HOST'] = previous_value
   end
 end

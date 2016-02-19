@@ -9,6 +9,12 @@ class Wakes::Location < ActiveRecord::Base
   scope :canonical, -> { where(:canonical => true) }
   scope :legacy, -> { where(:canonical => false) }
 
+  def self.find_by_url(url)
+    uri = URI(url)
+    fail HostMismatchError, 'host does not match' if !ENV['DEFAULT_HOST'].nil? && ENV['DEFAULT_HOST'] != uri.host
+    find_by!(:path => URI(url).path)
+  end
+
   def label
     path
   end
@@ -16,4 +22,6 @@ class Wakes::Location < ActiveRecord::Base
   def url(protocol: 'http', host: ENV['DEFAULT_HOST'])
     "#{protocol}://#{host}#{path}"
   end
+
+  class HostMismatchError < StandardError; end
 end
