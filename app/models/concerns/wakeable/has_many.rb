@@ -18,6 +18,11 @@ module Wakeable
       wakes_resources.sum("COALESCE((wakes_resources.document ->> 'pageview_count')::int, 0)")
     end
 
+    def raw_aggregate_facebook_count
+      wakes_resources.reload
+      wakes_resources.sum("COALESCE((wakes_resources.document ->> 'facebook_count')::int, 0)")
+    end
+
     def initialize_wakes_graph
       wakes_value_for(:has_many).each do |options|
         self.has_many_label = options[:label]
