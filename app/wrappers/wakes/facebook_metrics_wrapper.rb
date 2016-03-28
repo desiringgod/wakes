@@ -83,9 +83,13 @@ class Wakes::FacebookMetricsWrapper
       if attempts >= times
         raise e
       else
-        sleep 2; retry
+        add_delay; retry
       end
     end
+  end
+
+  def add_delay
+    sleep 2
   end
   # rubocop:enable Metrics/MethodLength
 end
