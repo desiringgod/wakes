@@ -18,6 +18,7 @@ RSpec.describe Wakes::FacebookMetricsWrapper do
 
     it 'raises an exception after retrying thrice' do
       stub = stub_request(:post, api_url_with_any_parameter).and_raise(StandardError)
+      expect(subject).to receive(:add_delay).twice.and_return(double)
       expect { subject.share_counts }.to raise_error(StandardError)
       expect(stub).to have_been_requested.times(3)
     end
