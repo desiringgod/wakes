@@ -37,13 +37,13 @@ class Wakes::Resource < ActiveRecord::Base
 
   def one_location_is_canonical
     if locations.where(:canonical => true).count < 1
-      errors.add(:locations, 'one must be canonical')
+      errors.add(:locations, 'None of the associated Locations are canonical. At least one must be canonical')
     end
   end
 
   def only_one_location_is_canonical
     if locations.where(:canonical => true).count > 1
-      errors.add(:locations, 'only one may be canonical')
+      errors.add(:locations, 'More than one of the associated Locations are canonical. Only one may be canonical')
     end
   end
 end
