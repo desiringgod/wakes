@@ -51,15 +51,12 @@ RSpec.describe Wakes::FacebookCountUpdaterService do
           end
         end
 
-        let(:wakeable) { wakeable_class.new }
-
-        before do
-          resource.wakeable = wakeable
-          wakeable.wakes_resources << create(:resource, :facebook_count => 20)
-        end
+        let!(:another_resource) { create(:resource, :facebook_count => 20) }
+        let!(:wakeable) { wakeable_class.create(:wakes_resources => [resource, another_resource]) }
 
         it 'updates the facebook count of the associated wakeable' do
           subject.update_facebook_count
+          wakeable.reload
           expect(wakeable.facebook_count).to eq(45)
         end
       end
