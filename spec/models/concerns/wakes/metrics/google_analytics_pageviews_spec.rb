@@ -34,14 +34,28 @@ RSpec.describe Wakes::Metrics::GoogleAnalyticsPageviews do
   end
 
   describe '::needs_analytics_update' do
-    it 'exclude urls that were updated through yesterday, and includes all others' do
+    it 'exclude urls that were updated through yesterday' do
       location_1 = create(:location, :pageview_count_updated_through => 2.days.ago)
       location_2 = create(:location, :pageview_count_updated_through => 3.day.ago)
-      create(:location, :pageview_count_updated_through => 1.days.ago)
+      location_3 = create(:location, :pageview_count_updated_through => 1.days.ago)
       location_4 = create(:location, :pageview_count_updated_through => nil)
 
-      expect(Wakes::Location.needs_analytics_update.to_a)
-        .to include(location_1, location_2, location_4)
+      locations = Wakes::Location.needs_analytics_update.to_a
+
+      expect(locations).to include(location_1, location_2, location_4)
+      expect(locations).not_to include(location_3)
+    end
+
+    it 'excludes noncanonical urls that have already been updated' do
+      location_1 = create(:location, :canonical => true, :pageview_count_updated_through => 3.days.ago)
+      location_2 = create(:location, :canonical => false, :pageview_count_updated_through => 3.days.ago)
+      location_3 = create(:location, :canonical => true, :pageview_count_updated_through => nil)
+      location_4 = create(:location, :canonical => false, :pageview_count_updated_through => nil)
+
+      locations = Wakes::Location.needs_analytics_update.to_a
+
+      expect(locations).to include(location_1, location_3, location_4)
+      expect(locations).not_to include(location_2)
     end
   end
 end
