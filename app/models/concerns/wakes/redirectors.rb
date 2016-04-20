@@ -13,6 +13,7 @@ module Wakes
       end
 
       def create_redirect_graph
+        reload
         return unless canonical_location.present?
         legacy_locations.reload
         legacy_paths_in_redis = legacy_locations.map do |legacy_location|
@@ -23,6 +24,7 @@ module Wakes
       end
 
       def destroy_redirect_graph
+        reload
         if legacy_paths_in_redis.present?
           Wakes::REDIS.del(legacy_paths_in_redis)
           update_attribute(:legacy_paths_in_redis, nil)

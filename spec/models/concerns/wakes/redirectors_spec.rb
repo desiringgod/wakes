@@ -62,17 +62,17 @@ RSpec.describe Wakes::Redirectors do
     end
   end
 
-  before do
-    # clear out anything that got set up during initialization
-    Wakes::REDIS.del('/legacy-location-one', '/legacy-location-two')
-    resource.update_attribute(:legacy_paths_in_redis, nil)
-
-    # set up the graph
-    resource.create_redirect_graph
-    resource.reload
-  end
-
   describe '#destroy_redirect_graph' do
+    before do
+      # clear out anything that got set up during initialization
+      Wakes::REDIS.del('/legacy-location-one', '/legacy-location-two')
+      resource.update_attribute(:legacy_paths_in_redis, nil)
+
+      # set up the graph
+      resource.create_redirect_graph
+      resource.reload
+    end
+
     it 'destroys the redis keys corresponding to the list of legacy paths set in Wakes::Resource' do
       resource.destroy_redirect_graph
 

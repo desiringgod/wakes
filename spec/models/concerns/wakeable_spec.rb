@@ -511,4 +511,20 @@ RSpec.describe Wakeable do
       end
     end
   end
+
+  describe 'redirects' do
+    it 'updates redirects on save' do
+      model_class = custom_wakeable_class do
+        wakes do
+          label :title
+          path { "/#{title.parameterize}" }
+        end
+      end
+
+      wakeable = model_class.create(:title => 'Some Title')
+      wakeable.title = 'Some New Title'
+      wakeable.save
+      expect(Wakes::REDIS.get('/some-title')).to eq('/some-new-title')
+    end
+  end
 end
