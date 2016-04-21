@@ -18,9 +18,12 @@ module Wakes
         end
 
         def self.needs_analytics_update
-          where("(document->>'pageview_count_updated_through') IS NULL \
-                OR document->>'pageview_count_updated_through' < ?",
-                1.day.ago.to_date)
+          # either it's never been updated
+          # OR it's canonical and it has not been updated through yesterday
+          # yesterday is the most recent day it can be updated through)
+          where(%{(document->>'pageview_count_updated_through') IS NULL \
+                OR ("canonical" = ? AND document->>'pageview_count_updated_through' < ?)},
+                true, 1.day.ago.to_date)
         end
       end
     end
