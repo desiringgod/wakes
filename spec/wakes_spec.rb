@@ -27,11 +27,12 @@ RSpec.describe Wakes do
         expect(wakes_resource.wakeable).to eq(wakeable)
         expect(wakes_resource.identifier).to eq('some-identifier')
         expect(wakes_resource.locations.first.path).to eq('/some/path')
+        expect(wakes_resource.locations.first.url).to eq("http://#{ENV['DEFAULT_HOST']}/some/path")
       end
     end
 
     describe '::create' do
-      context 'with good input' do
+      context 'with good input for default host' do
         let(:wakes_resource) do
           Wakes.create(:label => 'Some Label',
                        :wakeable => wakeable,
@@ -48,6 +49,29 @@ RSpec.describe Wakes do
           expect(wakes_resource.wakeable).to eq(wakeable)
           expect(wakes_resource.identifier).to eq('some-identifier')
           expect(wakes_resource.locations.first.path).to eq('/some/path')
+          expect(wakes_resource.locations.first.url).to eq("http://#{ENV['DEFAULT_HOST']}/some/path")
+        end
+      end
+
+      context 'with good input for non-default host' do
+        let(:wakes_resource) do
+          Wakes.create(:label => 'Some Label',
+                       :wakeable => wakeable,
+                       :path => '/some/path',
+                       :host => 'solidjoys.desiringgod.org',
+                       :identifier => 'some-identifier')
+        end
+
+        it 'is persisted' do
+          expect(wakes_resource).to be_persisted
+        end
+
+        it 'creates the Wakes::Resource' do
+          expect(wakes_resource.label).to eq('Some Label')
+          expect(wakes_resource.wakeable).to eq(wakeable)
+          expect(wakes_resource.identifier).to eq('some-identifier')
+          expect(wakes_resource.locations.first.path).to eq('/some/path')
+          expect(wakes_resource.locations.first.url).to eq('http://solidjoys.desiringgod.org/some/path')
         end
       end
 
@@ -71,7 +95,7 @@ RSpec.describe Wakes do
     end
 
     describe '::create!' do
-      context 'with good input' do
+      context 'with good input for default host' do
         let(:wakes_resource) do
           Wakes.create!(:label => 'Some Label',
                         :wakeable => wakeable,
@@ -88,6 +112,29 @@ RSpec.describe Wakes do
           expect(wakes_resource.wakeable).to eq(wakeable)
           expect(wakes_resource.identifier).to eq('some-identifier')
           expect(wakes_resource.locations.first.path).to eq('/some/path')
+          expect(wakes_resource.locations.first.url).to eq("http://#{ENV['DEFAULT_HOST']}/some/path")
+        end
+      end
+
+      context 'with good input for non-default host' do
+        let(:wakes_resource) do
+          Wakes.create!(:label => 'Some Label',
+                        :wakeable => wakeable,
+                        :path => '/some/path',
+                        :host => 'solidjoys.desiringgod.org',
+                        :identifier => 'some-identifier')
+        end
+
+        it 'is persisted' do
+          expect(wakes_resource).to be_persisted
+        end
+
+        it 'creates the Wakes::Resource' do
+          expect(wakes_resource.label).to eq('Some Label')
+          expect(wakes_resource.wakeable).to eq(wakeable)
+          expect(wakes_resource.identifier).to eq('some-identifier')
+          expect(wakes_resource.locations.first.path).to eq('/some/path')
+          expect(wakes_resource.locations.first.url).to eq('http://solidjoys.desiringgod.org/some/path')
         end
       end
 
