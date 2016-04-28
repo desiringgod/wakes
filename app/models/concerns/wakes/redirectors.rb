@@ -17,7 +17,7 @@ module Wakes
         return unless canonical_location.present?
         legacy_locations.reload
         legacy_paths_in_redis = legacy_locations.map do |legacy_location|
-          Wakes::REDIS.set(legacy_location.path, canonical_location.path)
+          Wakes::REDIS.set(legacy_location.path, canonical_location.path_or_url) if legacy_location.host.blank?
           legacy_location.path
         end
         update_attribute(:legacy_paths_in_redis, legacy_paths_in_redis)

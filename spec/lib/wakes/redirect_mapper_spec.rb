@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Wakes::RedirectMapper do
@@ -39,7 +40,7 @@ RSpec.describe Wakes::RedirectMapper do
         described_class.new '/source', '/target', 'New Label'
 
         expect(resource).to have_wakes_graph(:canonical_location => '/other')
-        expect(Wakes::Location.find_by(:path => '/target').resource)
+        expect(Wakes::Location.find_by(:host => nil, :path => '/target').resource)
           .to have_wakes_graph(:canonical_location => '/target', :legacy_locations => ['/source'])
       end
     end
@@ -49,7 +50,7 @@ RSpec.describe Wakes::RedirectMapper do
     context 'on the same resource' do
       let!(:resource) { create(:resource, :label => 'Only Resource') }
 
-      context 'target is canonical and source is not' do
+      context 'target is canonical and source is not; default host' do
         let!(:target) { create(:location, :canonical => true, :path => '/target', :resource => resource) }
         let!(:source) { create(:location, :canonical => false, :path => '/source', :resource => resource) }
 
@@ -80,7 +81,7 @@ RSpec.describe Wakes::RedirectMapper do
           described_class.new '/source', '/target', 'New Label'
 
           expect(resource).to have_wakes_graph(:canonical_location => '/other')
-          expect(Wakes::Location.find_by(:path => '/target').resource)
+          expect(Wakes::Location.find_by(:host => nil, :path => '/target').resource)
             .to have_wakes_graph(:canonical_location => '/target', :legacy_locations => ['/source'])
         end
       end
@@ -163,7 +164,7 @@ RSpec.describe Wakes::RedirectMapper do
 
           expect(source_resource).to have_wakes_graph(:canonical_location => '/other-on-source')
           expect(target_resource).to have_wakes_graph(:canonical_location => '/other-on-target')
-          expect(Wakes::Location.find_by(:path => '/target').resource)
+          expect(Wakes::Location.find_by(:host => nil, :path => '/target').resource)
             .to have_wakes_graph(:canonical_location => '/target', :legacy_locations => ['/source'])
         end
       end
@@ -174,8 +175,45 @@ RSpec.describe Wakes::RedirectMapper do
     it 'creates a new resource' do
       described_class.new '/source', '/target', 'New Label'
 
-      expect(Wakes::Location.find_by(:path => '/target').resource)
+      expect(Wakes::Location.find_by(:host => nil, :path => '/target').resource)
         .to have_wakes_graph(:canonical_location => '/target', :legacy_locations => ['/source'])
+    end
+  end
+
+  describe 'handles non-default hosts' do
+    context 'source is default, target is default' do
+      it 'points the source location to the target resource' do
+        described_class.new '/source', '/target', 'New Label'
+
+        expect(Wakes::Location.find_by(:host => nil, :path => '/target').resource)
+          .to have_wakes_graph(:canonical_location => '/target', :legacy_locations => ['/source'])
+      end
+    end
+
+    context 'source is default, target is non-default' do
+      it 'points the source location to the target resource' do
+        described_class.new '/source', 'some.host/target', 'New Label'
+        expect(Wakes::Location.find_by(:host => nil, :path => '/source').resource)
+          .to have_wakes_graph(:canonical_location => 'some.host/target', :legacy_locations => ['/source'])
+      end
+    end
+
+    context 'source is non-default, target is default' do
+      it 'points the source location to the target resource' do
+        described_class.new 'some.host/source', '/target', 'New Label'
+        expect(Wakes::Location.find_by(:host => nil, :path => '/target').resource)
+          .to have_wakes_graph(:canonical_location => '/target',
+                               :legacy_locations => ['some.host/source'])
+      end
+    end
+
+    context 'source is non-default, target is non-default' do
+      it 'points the source location to the target resource' do
+        described_class.new 'some.host/source', 'some.other.host/target', 'New Label'
+        expect(Wakes::Location.find_by(:host => 'some.other.host', :path => '/target').resource)
+          .to have_wakes_graph(:canonical_location => 'some.other.host/target',
+                               :legacy_locations => ['some.host/source'])
+      end
     end
   end
 end

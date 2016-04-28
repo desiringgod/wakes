@@ -39,8 +39,8 @@ module Wakes
     build(*args).tap(&:save!)
   end
 
-  def self.redirect(source, target, label = nil)
-    RedirectMapper.new(source, target, label)
+  def self.redirect(source_path_or_url, target_path_or_url, label = nil)
+    RedirectMapper.new(source_path_or_url, target_path_or_url, label)
   end
 
   def self.create_redis_graph
