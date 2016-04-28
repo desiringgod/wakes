@@ -2,6 +2,7 @@
 class Wakes::Location < ActiveRecord::Base
   include Wakes::Metrics::GoogleAnalyticsPageviews
   include Wakes::Metrics::Facebook
+  include Wakes::Metrics::Twitter
 
   validates :path, :format => { :with => %r{\A\/} }, :uniqueness => { :scope => :host }
   belongs_to :resource, :foreign_key => :wakes_resource_id, :inverse_of => :locations, :touch => true
