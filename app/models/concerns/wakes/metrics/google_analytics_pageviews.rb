@@ -24,6 +24,7 @@ module Wakes
           where(%{(document->>'pageview_count_updated_through') IS NULL \
                 OR ("canonical" = ? AND document->>'pageview_count_updated_through' < ?)},
                 true, 1.day.ago.to_date)
+            .where('host IS NULL OR host = ?', [ENV['DEFAULT_HOST']]) # Only query GA for paths on the current host
         end
       end
     end

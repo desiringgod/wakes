@@ -2,6 +2,14 @@
 require 'rails_helper'
 
 RSpec.describe Wakes::GoogleAnalyticsApiWrapper do
+  # NOTE these tests will need a Google API TOKEN to pass
+  # Remember to remove the API TOKEN before committing!
+  # before do
+  #   ENV['GOOGLE_PRIVATE_KEY'] = '<google-private-key>'
+  #   ENV['GOOGLE_CLIENT_EMAIL'] = '<google-client-email>'
+  #   ENV['GOOGLE_ANALYTICS_PROFILE_ID'] = '<google-analytics-profile-id>'
+  # end
+
   describe '#get_pageviews_for_path' do
     # Describes this view: https://www.google.com/analytics/web/?hl=en#report/content-pages/a1853263w3269662p8231065/%3F_u.date00%3D20140101%26_u.date01%3D20141231%26explorer-table.plotKeys%3D%5B%5D%26explorer-table.advFilter%3D%5B%5B0%2C%22analytics.pagePath%22%2C%22RE%22%2C%22%5E%2Fabout(%5C%5C%3F%7C%24)%22%2C0%5D%5D%26explorer-table.rowCount%3D100/
     it 'returns the total pageviews for the given date range, converting date input to date strings' do
