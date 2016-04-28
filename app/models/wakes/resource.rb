@@ -24,7 +24,7 @@ class Wakes::Resource < ActiveRecord::Base
   def to_s
     <<-EOS
   #{Wakes.color(:yellow, "(#{id}) #{label}")}
-    [#{legacy_locations.pluck(:path).join(', ')}] ----> #{canonical_location.path}
+    [#{legacy_locations.map(&:label).join(', ')}] ----> #{canonical_location.label}
     EOS
   end
 

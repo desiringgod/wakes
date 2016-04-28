@@ -57,5 +57,23 @@ RSpec.describe Wakes::Metrics::GoogleAnalyticsPageviews do
       expect(locations).to include(location_1, location_3, location_4)
       expect(locations).not_to include(location_2)
     end
+
+    it 'excludes urls on non-default domains' do
+      location_1 = create(:location, :canonical => true, :pageview_count_updated_through => nil)
+      location_2 = create(:location, :canonical => false, :pageview_count_updated_through => nil)
+      location_3 = create(:location,
+                          :host => 'www.example.com',
+                          :canonical => true,
+                          :pageview_count_updated_through => nil)
+      location_4 = create(:location,
+                          :host => 'www.example.com',
+                          :canonical => false,
+                          :pageview_count_updated_through => nil)
+
+      locations = Wakes::Location.needs_analytics_update.to_a
+
+      expect(locations).to include(location_1, location_2)
+      expect(locations).not_to include(location_3, location_4)
+    end
   end
 end

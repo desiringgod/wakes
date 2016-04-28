@@ -1,14 +1,18 @@
 # frozen_string_literal: true
+
+require_relative 'uri_from_location_string'
+
 module Wakes
   class RedirectMapper
-    attr_accessor :source, :target, :label
+    attr_accessor :source_host, :source_path, :target_host, :target_path, :label
 
-    def initialize(source, target, label = nil)
-      @source = source
-      @target = target
+    def initialize(source_path_or_url, target_path_or_url, label = nil)
+      @source_host, @source_path = URIFromLocationString.get_host_and_path(source_path_or_url)
+      @target_host, @target_path = URIFromLocationString.get_host_and_path(target_path_or_url)
       @label = label
-      puts Wakes.color(:white, "Redirecting from #{source} to #{target}", :bold => true)
 
+      puts Wakes.color(:white, "Redirecting from #{source_host}#{source_path} to #{target_host}#{target_path}",
+                       :bold => true)
       print_graph('Starting graph')
       both_present || target_present || source_present || none_present
       print_graph('Ending graph')
@@ -19,10 +23,7 @@ module Wakes
 
     def print_graph(notice)
       puts Wakes.color(:magenta, notice)
-
-      Wakes::Resource.where(:id => resources_affected).each do |resource|
-        puts resource.to_s
-      end
+      Wakes::Resource.where(:id => resources_affected).each { |resource| puts resource.to_s }
     end
 
     def resources_affected
@@ -33,11 +34,11 @@ module Wakes
     end
 
     def target_location
-      @target_location ||= Wakes::Location.find_by(:path => target)
+      @target_location ||= Wakes::Location.find_by(:host => target_host, :path => target_path)
     end
 
     def source_location
-      @source_location ||= Wakes::Location.find_by(:path => source)
+      @source_location ||= Wakes::Location.find_by(:host => source_host, :path => source_path)
     end
 
     def create_new
@@ -102,7 +103,7 @@ module Wakes
       return unless target_location.present? && source_location.nil?
 
       resource = target_location.resource
-      resource.legacy_locations.create!(:path => source)
+      resource.legacy_locations.create!(:host => source_host, :path => source_path)
     end
 
     def source_present
@@ -111,21 +112,21 @@ module Wakes
       if source_location.canonical?
         add_target_to_canonical_source
       else
-        resource = Wakes.create!(:path => target, :label => label)
+        resource = Wakes.create!(:host => target_host, :path => target_path, :label => label)
         source_location.update_attributes(:canonical => false, :resource => resource)
       end
     end
 
     def add_target_to_canonical_source
       source_location.resource.locations.update_all(:canonical => false)
-      source_location.resource.create_canonical_location!(:path => target)
+      source_location.resource.create_canonical_location!(:host => target_host, :path => target_path)
     end
 
     def none_present
       return unless target_location.nil? && source_location.nil?
 
-      resource = Wakes.create!(:label => label, :path => target)
-      resource.legacy_locations.create!(:path => source)
+      resource = Wakes.create!(:label => label, :host => target_host, :path => target_path)
+      resource.legacy_locations.create!(:host => source_host, :path => source_path)
     end
   end
 end

@@ -24,10 +24,10 @@ module Wakes
     'wakes_'
   end
 
-  def self.build(label:, wakeable: nil, path:, identifier: nil)
+  def self.build(label:, wakeable: nil, host: nil, path:, identifier: nil)
     logger.debug { "Building wake for #{label} at #{path}" }
     resource = Wakes::Resource.new(:label => label, :wakeable => wakeable, :identifier => identifier)
-    resource.locations.build(:path => path, :canonical => true)
+    resource.locations.build(:host => host, :path => path, :canonical => true)
     resource
   end
 
@@ -39,8 +39,8 @@ module Wakes
     build(*args).tap(&:save!)
   end
 
-  def self.redirect(source, target, label = nil)
-    RedirectMapper.new(source, target, label)
+  def self.redirect(source_path_or_url, target_path_or_url, label = nil)
+    RedirectMapper.new(source_path_or_url, target_path_or_url, label)
   end
 
   def self.create_redis_graph

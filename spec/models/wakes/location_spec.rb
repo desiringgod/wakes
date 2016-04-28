@@ -12,6 +12,11 @@ RSpec.describe Wakes::Location, :type => :model do
       expect(create(:location, :path => '/some/path')).to be_valid
       expect(build(:location, :path => '/some/path')).to_not be_valid
     end
+
+    it 'does not consider as equivalent identical paths on different hosts' do
+      expect(create(:location, :path => '/some/path', :host => 'www.desiringgod.org')).to be_valid
+      expect(build(:location, :path => '/some/path', :host => 'solidjoys.desiringgod.org')).to be_valid
+    end
   end
 
   it 'belongs to a resource' do
@@ -30,10 +35,15 @@ RSpec.describe Wakes::Location, :type => :model do
     end
 
     it 'picks the host from the argument passed to it' do
-      expect(location.url(:host => 'awesome.domain')).to include('awesome.domain')
+      expect(location.url(:host_override => 'awesome.domain')).to include('awesome.domain')
     end
 
-    it 'defaults to the DEFAULT_HOST environment variable if no argument is passed to it' do
+    it 'picks the host from wakes location if no argument is passed' do
+      location.host = 'awesome.domain'
+      expect(location.url).to include('awesome.domain')
+    end
+
+    it 'defaults to the DEFAULT_HOST environment variable if location not otherwise specified' do
       previous_value = ENV['DEFAULT_HOST']
       ENV['DEFAULT_HOST'] = 'default.host'
 
