@@ -17,12 +17,10 @@ RSpec::Matchers.define :have_wakes_graph do |canonical_location:, legacy_locatio
   end
 
   failure_message do |wakes_resource|
-    wakes_legacy_locations_array = wakes_resource.legacy_locations.map do |x|
-      URIFromLocationString.get_host_and_path(x)
-    end.sort
+    legacy_locations_array = legacy_locations.map { |x| URIFromLocationString.get_host_and_path(x) }.sort
     message = "Expected canonical location \"#{canonical_location}\","
     message += " got canonical location \"#{wakes_resource.canonical_location.label}\"\n"
-    message += "Expected legacy locations #{legacy_locations.sort}, "
-    message + "got legacy locations #{wakes_legacy_locations_array}"
+    message += "Expected legacy locations #{legacy_locations_array}, "
+    message + "got legacy locations #{wakes_resource.legacy_locations.pluck(:host, :path).sort}"
   end
 end
