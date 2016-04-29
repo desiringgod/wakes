@@ -17,7 +17,7 @@ class Wakes::Resource < ActiveRecord::Base
     validate :only_one_location_is_canonical
   end
 
-  store_accessor :document, :pageview_count, :facebook_count
+  store_accessor :document, :pageview_count, :facebook_count, :twitter_count
 
   validates :label, :presence => true
 
@@ -30,6 +30,11 @@ class Wakes::Resource < ActiveRecord::Base
 
   def update_facebook_count
     self.facebook_count = locations.sum("COALESCE((wakes_locations.document ->> 'facebook_count')::int, 0)")
+    save!
+  end
+
+  def update_twitter_count
+    self.twitter_count = locations.sum("COALESCE((wakes_locations.document ->> 'twitter_count')::int, 0)")
     save!
   end
 
