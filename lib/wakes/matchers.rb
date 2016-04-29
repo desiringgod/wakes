@@ -11,7 +11,7 @@ RSpec::Matchers.define :have_wakes_graph do |canonical_location:, legacy_locatio
 
     wakes_resource.locations.count == expected_location_count &&
       wakes_resource.canonical_location.host == URIFromLocationString.generate(canonical_location).host &&
-      wakes_resource.canonical_location.path == URIFromLocationString.generate(canonical_location).path &&
+      wakes_resource.canonical_location.path == URIFromLocationString.generate(canonical_location).request_uri &&
       wakes_resource.legacy_locations.pluck(:host, :path).sort ==
         legacy_locations.map { |x| URIFromLocationString.get_host_and_path(x) }.sort
   end
