@@ -122,4 +122,19 @@ RSpec.describe Wakes::Resource, :type => :model do
       end
     end
   end
+
+  describe '#update_facebook_count' do
+    it 'aggreagates facebook count of associated locations into the resource' do
+      location_one = build(:location, :path => '/target', :canonical => true, :facebook_count => 5143)
+      location_two = build(:location, :path => '/source1', :canonical => false, :facebook_count => 2187)
+
+      resource = create(:resource,
+                        :label => 'Test Resource',
+                        :locations => [location_one, location_two])
+
+      resource.update_facebook_count
+
+      expect(resource.facebook_count).to eq 7330
+    end
+  end
 end
