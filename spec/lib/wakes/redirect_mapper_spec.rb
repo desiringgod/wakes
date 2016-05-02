@@ -216,4 +216,13 @@ RSpec.describe Wakes::RedirectMapper do
       end
     end
   end
+
+  context 'handles query strings' do
+    it 'retains the query strings in the wakes graph' do
+      described_class.new '/source?param=p1', '/target?key=value', 'New Label'
+
+      expect(Wakes::Location.find_by(:host => nil, :path => '/source?param=p1').resource)
+        .to have_wakes_graph(:canonical_location => '/target?key=value', :legacy_locations => ['/source?param=p1'])
+    end
+  end
 end
