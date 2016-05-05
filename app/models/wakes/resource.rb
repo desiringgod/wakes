@@ -29,13 +29,13 @@ class Wakes::Resource < ActiveRecord::Base
   end
 
   def update_facebook_count
-    self.facebook_count = locations.sum("COALESCE((wakes_locations.document ->> 'facebook_count')::int, 0)")
-    save!
+    update_attribute(:facebook_count,
+                     locations.sum("COALESCE((wakes_locations.document ->> 'facebook_count')::int, 0)"))
   end
 
   def update_twitter_count
-    self.twitter_count = locations.sum("COALESCE((wakes_locations.document ->> 'twitter_count')::int, 0)")
-    save!
+    update_attribute(:twitter_count,
+                     locations.sum("COALESCE((wakes_locations.document ->> 'twitter_count')::int, 0)"))
   end
 
   private
