@@ -42,7 +42,7 @@ module Wakeable
   end
 
   def wakes_enabled?
-    wakes_value_for(:run_if) != false
+    Wakes.configuration.enabled && wakes_value_for(:run_if) != false
   end
 
   module ClassMethods
