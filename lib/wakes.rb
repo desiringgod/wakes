@@ -67,7 +67,7 @@ module Wakes
     :white => "\e[37m"
   }.freeze
 
-  def self.color(color, string, bold:false)
+  def self.color(color, string, bold: false)
     bold = bold ? "\e[1m" : ''
 
     if color = COLORS[color.to_sym]

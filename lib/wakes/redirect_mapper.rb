@@ -56,11 +56,10 @@ module Wakes
     def same_resource
       return unless target_location.resource == source_location.resource
 
-      case
-      when source_location.canonical?
+      if source_location.canonical?
         target_location.update_attribute(:canonical, true)
         source_location.update_attribute(:canonical, false)
-      when target_location.canonical?
+      elsif target_location.canonical?
       else
         create_new
       end
