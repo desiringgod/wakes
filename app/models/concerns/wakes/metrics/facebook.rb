@@ -7,6 +7,10 @@ module Wakes
       included do
         store_accessor :document, :facebook_count, :facebook_count_updated_at
 
+        def enqueue_facebook_count_update
+          Wakes::UpdateFacebookMetricsJob.perform_later(self)
+        end
+
         def self.ordered_for_facebook_updates
           order("document->'facebook_count_updated_at' ASC NULLS FIRST")
         end
