@@ -53,7 +53,7 @@ RSpec.describe Wakeable do
             some_unrecognized_option { true }
           end
         end
-      end.to raise_error(Wakes::Configuration::UnrecognizedConfigurationOption)
+      end.to raise_error(Wakes::ModelConfiguration::UnrecognizedConfigurationOption)
     end
   end
 

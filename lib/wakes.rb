@@ -2,7 +2,7 @@
 require 'rails/engine'
 require 'wakes/version'
 require 'wakes/engine'
-require 'wakes/configuration'
+require 'wakes/model_configuration'
 require 'wakes/redirect_mapper'
 require 'wakes/middleware/redirector'
 
