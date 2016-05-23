@@ -57,7 +57,7 @@ module Wakeable
     end
 
     def wakes(&block)
-      self.wakes_configuration = Wakes::Configuration.new(&block)
+      self.wakes_configuration = Wakes::ModelConfiguration.new(&block)
 
       include wakes_value_for(:has_many) ? Wakeable::HasMany : Wakeable::HasOne
 
