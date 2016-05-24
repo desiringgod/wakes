@@ -28,7 +28,8 @@ RSpec.describe Wakes::FacebookMetricsWrapper do
         .and_return(double(:parsed_response => {'error' => {
                              'message' => 'Application request limit reached ',
                              'code' => 4,
-                             'fbtrace_id' => 'randomalphnumeric'}}))
+                             'fbtrace_id' => 'randomalphnumeric'
+                           }}))
       expect { subject.share_counts }.to raise_error(Wakes::FacebookMetricsWrapper::FacebookRateLimitExceeded)
     end
 
@@ -38,7 +39,8 @@ RSpec.describe Wakes::FacebookMetricsWrapper do
                              :message => 'Invalid OAuth access token signature.',
                              :type =>  'OAuthException',
                              :code =>  190,
-                             :fbtrace_id => 'DPbD74EinvE'}}))
+                             :fbtrace_id => 'DPbD74EinvE'
+                           }}))
       expect { subject.share_counts }.to raise_error(Wakes::FacebookMetricsWrapper::FacebookError)
     end
 
@@ -47,8 +49,7 @@ RSpec.describe Wakes::FacebookMetricsWrapper do
         .and_return(double(:parsed_response => [{'body' => {'id' => 'url-1',
                                                             'shares' => {'share_counts' => 500}}.to_json},
                                                 nil,
-                                                nil]
-                          ))
+                                                nil]))
       expect { subject.share_counts }.to raise_error Wakes::FacebookMetricsWrapper::FacebookNullResponse
     end
 
