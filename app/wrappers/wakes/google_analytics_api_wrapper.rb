@@ -7,9 +7,9 @@ class Wakes::GoogleAnalyticsApiWrapper
 
   # More precisely, this sums up the pageviews for this particular path and
   # any other paths with query strings
-  def get_pageviews_for_path(path, start_date:, end_date:)
+  def get_pageviews_for_path(path, start_date:, end_date:, profile_id: Wakes.configuration.ga_profiles['default'])
     authorized_analytics_service.get_ga_data(
-      "ga:#{ENV['GOOGLE_ANALYTICS_PROFILE_ID']}",
+      "ga:#{profile_id}",
       format_date(start_date),
       format_date(end_date),
       'ga:pageviews',
