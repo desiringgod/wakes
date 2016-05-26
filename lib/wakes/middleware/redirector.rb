@@ -22,7 +22,7 @@ module Wakes
         puts "[Wakes::Middleware::Redirector] redirecting from #{from} to #{to}"
         [
           301,
-          {'Location' => to, 'Content-Type' => 'text/plain'},
+          {'Location' => to, 'Turbolinks-Location' => to, 'Content-Type' => 'text/plain'},
           ["Memoized redirect from #{from} to #{to}"]
         ]
       end
