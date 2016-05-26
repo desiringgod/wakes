@@ -1,22 +1,23 @@
 # frozen_string_literal: true
-class Wakes::Configuration
-  class UnrecognizedConfigurationOption < StandardError; end
-  attr_reader :configuration
 
-  OPTIONS = [:has_many, :path, :label, :run_if, :dependents, :debug].freeze
-
-  def initialize(&block)
-    @configuration = {}
-
-    instance_exec(&block)
+module Wakes
+  class << self
+    attr_writer :configuration
   end
 
-  def method_missing(name, *args, &block)
-    if OPTIONS.include?(name)
-      @configuration[name] = args.first || block
-    else
-      raise UnrecognizedConfigurationOption,
-            "Unrecognized configuration option #{name}. Allowed options are #{OPTIONS.to_sentence}."
+  def self.configuration
+    @configuration ||= Configuration.new
+  end
+
+  def self.configure
+    yield(configuration)
+  end
+
+  class Configuration
+    attr_accessor :enabled
+
+    def initialize
+      @enabled = true
     end
   end
 end

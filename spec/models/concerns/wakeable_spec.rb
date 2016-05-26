@@ -53,7 +53,7 @@ RSpec.describe Wakeable do
             some_unrecognized_option { true }
           end
         end
-      end.to raise_error(Wakes::Configuration::UnrecognizedConfigurationOption)
+      end.to raise_error(Wakes::ModelConfiguration::UnrecognizedConfigurationOption)
     end
   end
 
@@ -525,6 +525,41 @@ RSpec.describe Wakeable do
       wakeable.title = 'Some New Title'
       wakeable.save
       expect(Wakes::REDIS.get('/some-title')).to eq('/some-new-title')
+    end
+  end
+
+  describe '::wakes_enabled?' do
+    let(:model_class) do
+      custom_wakeable_class do
+        wakes do
+          label :title
+          path { "/#{title.parameterize}" }
+        end
+      end
+    end
+
+    let(:wakeable) { model_class.new }
+
+    context 'when Wakes.configuration.enabled is false' do
+      it 'returns false' do
+        Wakes.configuration.enabled = false
+
+        expect(wakeable.wakes_enabled?).to be false
+        Wakes.configuration.enabled = true
+      end
+    end
+
+    context 'when Wakes.configuration.enabled is true' do
+      it 'falls back to the value of run_if option in the model configuration block' do
+        Wakes.configuration.enabled = true
+
+        allow(wakeable).to receive(:wakes_value_for).with(:run_if).and_return(true)
+        expect(wakeable.wakes_enabled?).to be true
+
+        allow(wakeable).to receive(:wakes_value_for).with(:run_if).and_return(false)
+        expect(wakeable.wakes_enabled?).to be false
+        Wakes.configuration.enabled = true
+      end
     end
   end
 end
