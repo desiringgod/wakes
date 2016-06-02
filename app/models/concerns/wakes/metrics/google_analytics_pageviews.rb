@@ -7,6 +7,18 @@ module Wakes
       included do
         store_accessor :document, :pageview_count, :pageview_count_updated_through, :pageview_count_checked_at
 
+        def enqueue_pageview_count_update
+          Wakes::GoogleAnalyticsPageviewJob.perform_later(self)
+        end
+
+        def google_analytics_profile_id
+          if host.blank? || (host == ENV['DEFAULT_HOST'])
+            Wakes.configuration.ga_profiles['default']
+          else
+            Wakes.configuration.ga_profiles[host]
+          end
+        end
+
         def self.enqueue_pageview_count_updates(count)
           ordered_for_analytics_worker.needs_analytics_update.limit(count).each do |location|
             Wakes::GoogleAnalyticsPageviewJob.perform_later(location)

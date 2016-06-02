@@ -15,9 +15,13 @@ module Wakes
 
   class Configuration
     attr_accessor :enabled
+    attr_accessor :ga_profiles
 
     def initialize
       @enabled = true
+      @ga_profiles = {
+        'default' => ENV['GOOGLE_ANALYTICS_PROFILE_ID']
+      }
     end
   end
 end

@@ -61,9 +61,12 @@ class Wakes::PageviewCountUpdaterService
     # usually, they will be equal
     raise EndDateEarlierThanStartDateError, 'end_date is earlier than start date' if end_date < start_date
 
-    @pageviews ||= Wakes::GoogleAnalyticsApiWrapper.new.get_pageviews_for_path(location.path,
-                                                                               :start_date => start_date,
-                                                                               :end_date => end_date)
+    @pageviews ||= Wakes::GoogleAnalyticsApiWrapper
+                   .new
+                   .get_pageviews_for_path(location.path,
+                                           :start_date => start_date,
+                                           :end_date => end_date,
+                                           :profile_id => location.google_analytics_profile_id)
   end
 
   class EndDateEarlierThanStartDateError < StandardError; end;
