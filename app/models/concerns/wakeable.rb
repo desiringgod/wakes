@@ -24,7 +24,11 @@ module Wakeable
   def update_wakes_resource_canonical_location(wakes_resource)
     if wakes_resource.canonical_location.path != wakes_value_for(:path)
       wakes_resource.locations.update_all(:canonical => false)
-      wakes_resource.locations.create(:path => wakes_value_for(:path), :canonical => true)
+      if new_location = wakes_resource.locations.find_by(:path => wakes_value_for(:path))
+        new_location.update!(:canonical => true)
+      else
+        wakes_resource.locations.create(:path => wakes_value_for(:path), :canonical => true)
+      end
     end
   end
 

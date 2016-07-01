@@ -493,6 +493,16 @@ RSpec.describe Wakeable do
 
         expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-new-title')
       end
+
+      it 'handles a change back to the original path' do
+        wakeable = model_class.create(:title => 'Some Title')
+
+        wakeable.update!(:title => 'Some New Title')
+        wakeable.update!(:title => 'Some Title')
+
+        expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/some-title',
+                                                            :legacy_locations => ['/some-new-title'])
+      end
     end
 
     describe 'on destroy' do
