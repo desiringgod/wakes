@@ -21,7 +21,7 @@ RSpec.describe Wakes::PageviewCountUpdaterService do
         expect(location.pageview_count).to eq 1200
         expect(location.resource.pageview_count).to eq 1200
         expect(location.pageview_count_updated_through).to eq Date.yesterday
-        expect(location.pageview_count_checked_at).to eq Time.zone.now
+        expect(location.pageview_count_checked_at).to be_within(0.1).of(Time.zone.now)
       end
 
       it 'stores the sum of location pageviews in the resource' do
@@ -39,13 +39,13 @@ RSpec.describe Wakes::PageviewCountUpdaterService do
       it 'returns a false if pageviews_since_last_update are 0' do
         allow(pageview_count_updater_service).to receive(:pageviews_since_last_update).and_return(0)
         expect(pageview_count_updater_service.update_pageview_count).to eq false
-        expect(location.pageview_count_checked_at).to eq Time.zone.now
+        expect(location.pageview_count_checked_at).to be_within(0.1).of(Time.zone.now)
       end
 
       it 'returns a false if pageviews_since_last_update are negative for some odd reason' do
         allow(pageview_count_updater_service).to receive(:pageviews_since_last_update).and_return(-1200)
         expect(pageview_count_updater_service.update_pageview_count).to eq false
-        expect(location.pageview_count_checked_at).to eq Time.zone.now
+        expect(location.pageview_count_checked_at).to be_within(0.1).of(Time.zone.now)
       end
 
       it 'raises an error if end date becomes larger than start date' do
@@ -59,7 +59,7 @@ RSpec.describe Wakes::PageviewCountUpdaterService do
         allow(pageview_count_updater_service).to receive(:pageviews_since_last_update).and_raise(StandardError)
 
         expect { pageview_count_updater_service.update_pageview_count }.to raise_error(StandardError)
-        expect(location.pageview_count_checked_at).to eq Time.zone.now
+        expect(location.pageview_count_checked_at).to be_within(0.1).of(Time.zone.now)
       end
     end
 

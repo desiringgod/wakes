@@ -96,9 +96,9 @@ RSpec.describe Wakes::FacebookCountUpdaterService do
         time = Time.zone.now
         Timecop.freeze(time)
         subject.update_facebook_count
-        expect(location_1.facebook_count_updated_at).to eq(time)
-        expect(location_2.facebook_count_updated_at).to eq(time)
-        expect(location_3.facebook_count_updated_at).to eq(time)
+        expect(location_1.facebook_count_updated_at).to be_within(0.1).of(time)
+        expect(location_2.facebook_count_updated_at).to be_within(0.1).of(time)
+        expect(location_3.facebook_count_updated_at).to be_within(0.1).of(time)
       end
 
       it 'aggregates the facebook counts of associated resource' do
