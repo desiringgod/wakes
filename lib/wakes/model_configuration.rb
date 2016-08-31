@@ -11,6 +11,7 @@ class Wakes::ModelConfiguration
     instance_exec(&block)
   end
 
+  # rubocop:disable MethodMissing
   def method_missing(name, *args, &block)
     if OPTIONS.include?(name)
       @configuration[name] = args.first || block
@@ -18,5 +19,10 @@ class Wakes::ModelConfiguration
       raise UnrecognizedConfigurationOption,
             "Unrecognized configuration option #{name}. Allowed options are #{OPTIONS.to_sentence}."
     end
+  end
+  # rubocop:enable MethodMissing
+
+  def respond_to_missing?(method_name, include_private = false)
+    OPTIONS.include?(method_name) || super
   end
 end

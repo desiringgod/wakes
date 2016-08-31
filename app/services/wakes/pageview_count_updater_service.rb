@@ -7,7 +7,7 @@ class Wakes::PageviewCountUpdaterService
   attr_reader :location
 
   def update_pageview_count
-    if pageviews_since_last_update > 0
+    if pageviews_since_last_update.positive?
       update_location_pageview_count && update_resource_aggregate_count && update_wakeable_aggregate_count
     else
       false

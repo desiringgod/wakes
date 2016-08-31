@@ -12,7 +12,7 @@ class Wakes::Resource < ActiveRecord::Base
 
   belongs_to :wakeable, :polymorphic => true
 
-  with_options :if => ->(resource) { resource.locations.count > 0 } do
+  with_options :if => ->(resource) { resource.locations.count.positive? } do
     validate :one_location_is_canonical
     validate :only_one_location_is_canonical
   end
