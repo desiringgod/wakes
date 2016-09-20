@@ -39,13 +39,11 @@ RSpec.describe Wakes::PageviewCountUpdaterService do
       it 'returns a false if pageviews_since_last_update are 0' do
         allow(pageview_count_updater_service).to receive(:pageviews_since_last_update).and_return(0)
         expect(pageview_count_updater_service.update_pageview_count).to eq false
-        expect(location.pageview_count_checked_at).to be_within(0.1).of(Time.zone.now)
       end
 
       it 'returns a false if pageviews_since_last_update are negative for some odd reason' do
         allow(pageview_count_updater_service).to receive(:pageviews_since_last_update).and_return(-1200)
         expect(pageview_count_updater_service.update_pageview_count).to eq false
-        expect(location.pageview_count_checked_at).to be_within(0.1).of(Time.zone.now)
       end
 
       it 'raises an error if end date becomes larger than start date' do
@@ -53,13 +51,6 @@ RSpec.describe Wakes::PageviewCountUpdaterService do
         expect do
           pageview_count_updater_service.update_pageview_count
         end.to raise_error(Wakes::PageviewCountUpdaterService::EndDateEarlierThanStartDateError)
-      end
-
-      it 'always rescues, updates date, and then reraises if there is an error' do
-        allow(pageview_count_updater_service).to receive(:pageviews_since_last_update).and_raise(StandardError)
-
-        expect { pageview_count_updater_service.update_pageview_count }.to raise_error(StandardError)
-        expect(location.pageview_count_checked_at).to be_within(0.1).of(Time.zone.now)
       end
     end
 
