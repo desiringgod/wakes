@@ -64,47 +64,47 @@ RSpec.describe Wakes::FacebookCountUpdaterService do
   end
 
   context 'multiple locations' do
-    let!(:location_1) { create(:location, :facebook_count => 4) }
-    let!(:location_2) { create(:location, :facebook_count => 10) }
-    let!(:location_3) { create(:location, :facebook_count => 12) }
+    let!(:location1) { create(:location, :facebook_count => 4) }
+    let!(:location2) { create(:location, :facebook_count => 10) }
+    let!(:location3) { create(:location, :facebook_count => 12) }
 
-    subject { described_class.new([location_1, location_2, location_3]) }
+    subject { described_class.new([location1, location2, location3]) }
 
     describe '#update_facebook_count' do
       before do
         facebook_wrapper = instance_double(Wakes::FacebookMetricsWrapper)
         expect(Wakes::FacebookMetricsWrapper)
           .to receive(:new).and_return(facebook_wrapper)
-        allow(facebook_wrapper).to receive(:share_counts).and_return(location_1.url => 20,
-                                                                     location_2.url => 30,
-                                                                     location_3.url => 40)
+        allow(facebook_wrapper).to receive(:share_counts).and_return(location1.url => 20,
+                                                                     location2.url => 30,
+                                                                     location3.url => 40)
       end
 
       before do
-        location_1.resource.locations << create(:location, :non_canonical, :facebook_count => 3)
-        location_2.resource.locations << create(:location, :non_canonical, :facebook_count => 6)
+        location1.resource.locations << create(:location, :non_canonical, :facebook_count => 3)
+        location2.resource.locations << create(:location, :non_canonical, :facebook_count => 6)
       end
 
       it 'updates the facebook count of all the locations' do
         subject.update_facebook_count
-        expect(location_1.facebook_count).to eq(20)
-        expect(location_2.facebook_count).to eq(30)
-        expect(location_3.facebook_count).to eq(40)
+        expect(location1.facebook_count).to eq(20)
+        expect(location2.facebook_count).to eq(30)
+        expect(location3.facebook_count).to eq(40)
       end
 
       it 'updates the facebook_count_updated_at for all locations' do
         time = Time.zone.now
         Timecop.freeze(time)
         subject.update_facebook_count
-        expect(location_1.facebook_count_updated_at).to be_within(0.1).of(time)
-        expect(location_2.facebook_count_updated_at).to be_within(0.1).of(time)
-        expect(location_3.facebook_count_updated_at).to be_within(0.1).of(time)
+        expect(location1.facebook_count_updated_at).to be_within(0.1).of(time)
+        expect(location2.facebook_count_updated_at).to be_within(0.1).of(time)
+        expect(location3.facebook_count_updated_at).to be_within(0.1).of(time)
       end
 
       it 'aggregates the facebook counts of associated resource' do
         subject.update_facebook_count
-        expect(location_1.resource.facebook_count).to eq(23)
-        expect(location_2.resource.facebook_count).to eq(36)
+        expect(location1.resource.facebook_count).to eq(23)
+        expect(location2.resource.facebook_count).to eq(36)
       end
     end
   end
