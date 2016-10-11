@@ -13,7 +13,7 @@ class Wakes::FacebookCountUpdaterService
       locations_slice.each do |location|
         location.update(:facebook_count => share_counts[location.url], :facebook_count_updated_at => Time.zone.now)
         location.resource.update_facebook_count
-        location.resource.wakeable.update_facebook_count if location.resource.wakeable
+        location.resource.wakeable&.update_facebook_count
       end
     end
   end
