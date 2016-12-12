@@ -1,67 +1,28 @@
-## Customize the test machine
-# machine:
-
-  # timezone:
-    # America/Los_Angeles # Set the timezone
-
-  # Version of ruby to use
-  # ruby:
-    # version:
-      # 2.3.1
-
-  # Override /etc/hosts
-  # hosts:
-    # circlehost: 127.0.0.1
-    # dev.mycompany.com: 127.0.0.1
-
-  # Add some environment variables
-  # environment:
-    # CIRCLE_ENV: test
-    # DATABASE_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
-
-## Customize checkout
-# checkout:
-  # post:
-    # - git submodule sync
-    # - git submodule update --init # use submodules
-
-## Customize dependencies
-# dependencies:
-  # pre:
-    # - npm install coffeescript # install from a different package manager
-    # - gem uninstall bundler # use a custom version of bundler
-    # - gem install bundler --pre
-
-  # override:
-    # - bundle install: # note ':' here
-        # timeout: 180 # fail if command has no output for 3 minutes
-
-  # # we automatically cache and restore many dependencies between
-  # # builds. If you need to, you can add custom paths to cache:
-  # cache_directories:
-    # - "custom_1"   # relative to the build directory
-    # - "~/custom_2" # relative to the user's home directory
-
-# ## Customize database setup
-database:
-  override:
-    # replace CircleCI's generated database.yml
-    - echo "The Combustion gem handles database maintenance"
-
-# ## Customize test commands
-test:
-  post:
-    - bundle exec rubocop -d
-
-# ## Customize deployment commands
-# deployment:
-  # staging:
-    # branch: master
-    # heroku:
-      # appname: foo-bar-123
-
-# ## Custom notifications
-# notify:
-  # webhooks:
-    # # A list of hashes representing hooks. Only the url field is supported.
-    # - url: https://someurl.com/hooks/circle
+version: 2.0
+executorType: docker
+containerInfo:
+  - image: ruby:2.3.1
+stages:
+  build:
+    workDir: /home/ubuntu/wakes
+    steps:
+      - type: checkout
+      - type: cache-restore
+        key: wakes-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+      - type: shell
+        name: "Dependencies"
+        command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3 
+      - type: shell
+        name: "RSpec"
+        command: bundle exec rspec --format documentation --color --format RspecJunitFormatter --out /tmp/circle-junit.lR1NJfo/rspec/rspec.xml
+      - type: shell
+        command: bundle exec rubocop -d
+      - type: cache-save
+        key: wakes-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+        paths:
+          - /home/ubuntu/.bundle
+          - /home/ubuntu/.go_workspace
+          - /home/ubuntu/.m2
+          - /home/ubuntu/.gradle
+          - /home/ubuntu/.ivy2
+          - /home/ubuntu/wakes/vendor/bundle
