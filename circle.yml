@@ -9,6 +9,7 @@ containerInfo:
     env:
       - POSTGRES_USER=ubuntu
       - POSTGRES_DB=circle_test
+  - image: redis:2.8.6
 stages:
   build:
     workDir: /home/ubuntu/wakes
