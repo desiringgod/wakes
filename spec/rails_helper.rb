@@ -11,9 +11,11 @@ end
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 
 env_file = File.join(Wakes::Engine.root, 'local_env.yml')
-YAML.load(File.open(env_file)).each do |key, value|
-  ENV[key.to_s] = value
-end if File.exist?(env_file)
+if File.exist?(env_file)
+  YAML.load(File.open(env_file)).each do |key, value|
+    ENV[key.to_s] = value
+  end
+end
 
 require 'spec_helper'
 require 'rspec/rails'
