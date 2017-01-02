@@ -28,10 +28,7 @@ module Wakeable
         self.has_many_label = options[:label]
         self.has_many_path = options[:path_fragment]
 
-        wakes_resource = wakes_resources.build(:label => wakes_value_for(:label),
-                                               :identifier => options[:identifier])
-        wakes_resource.locations.build(:path => wakes_value_for(:path), :canonical => true)
-        wakes_resource.save!
+        create_has_many_wake(options)
       end
     end
 
@@ -41,13 +38,27 @@ module Wakeable
         self.has_many_label = options[:label]
         self.has_many_path = options[:path_fragment]
 
-        wakes_resource = wakes_resources.find_by(:identifier => options[:identifier])
-
-        update_wakes_resource_label(wakes_resource)
-        update_wakes_resource_canonical_location(wakes_resource)
+        update_has_many_wake(options) || create_has_many_wake(options)
       end
 
       update_dependents
+    end
+
+    private
+
+    def create_has_many_wake(options)
+      wakes_resource = wakes_resources.build(:label => wakes_value_for(:label),
+                                             :identifier => options[:identifier])
+      wakes_resource.locations.build(:path => wakes_value_for(:path), :canonical => true)
+      wakes_resource.save!
+    end
+
+    def update_has_many_wake(options)
+      if wakes_resource = wakes_resources.find_by(:identifier => options[:identifier])
+        update_wakes_resource_label(wakes_resource)
+        update_wakes_resource_canonical_location(wakes_resource)
+        wakes_resource
+      end
     end
   end
 end
