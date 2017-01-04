@@ -134,6 +134,54 @@ RSpec.describe Wakeable do
           two = wakeable.wakes_resources.find_by(:identifier => 'two')
           expect(two).to have_wakes_graph(:canonical_location => '/two/some-new-title')
         end
+
+        it 'handles addition of identifiers' do
+          wakeable = model_class.create(:title => 'Some Title')
+
+          one = wakeable.wakes_resources.find_by(:identifier => 'one')
+          expect(one).to have_wakes_graph(:canonical_location => '/one/some-title')
+
+          two = wakeable.wakes_resources.find_by(:identifier => 'two')
+          expect(two).to have_wakes_graph(:canonical_location => '/two/some-title')
+
+          three = wakeable.wakes_resources.find_by(:identifier => 'three')
+          expect(three).to be_nil
+
+          model_class.wakes do
+            has_many do
+              [
+                {
+                  :label => 'One',
+                  :identifier => 'one',
+                  :path_fragment => 'one'
+                },
+                {
+                  :label => 'Two',
+                  :identifier => 'two',
+                  :path_fragment => 'two'
+                },
+                {
+                  :label => 'Three',
+                  :identifier => 'three',
+                  :path_fragment => 'three'
+                }
+              ]
+            end
+            label { "#{has_many_label} #{title}" }
+            path { "/#{has_many_path}/#{title.parameterize}" }
+          end
+
+          wakeable.save!
+
+          one = wakeable.wakes_resources.find_by(:identifier => 'one')
+          expect(one).to have_wakes_graph(:canonical_location => '/one/some-title')
+
+          two = wakeable.wakes_resources.find_by(:identifier => 'two')
+          expect(two).to have_wakes_graph(:canonical_location => '/two/some-title')
+
+          three = wakeable.wakes_resources.find_by(:identifier => 'three')
+          expect(three).to have_wakes_graph(:canonical_location => '/three/some-title')
+        end
       end
     end
   end
