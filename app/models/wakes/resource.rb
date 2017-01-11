@@ -38,6 +38,10 @@ class Wakes::Resource < ActiveRecord::Base
                      locations.sum("COALESCE((wakes_locations.document ->> 'twitter_count')::int, 0)"))
   end
 
+  def update_pageview_count
+    update_attribute(:pageview_count, locations.sum(&:pageview_count))
+  end
+
   private
 
   def one_location_is_canonical

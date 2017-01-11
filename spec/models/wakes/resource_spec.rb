@@ -152,4 +152,23 @@ RSpec.describe Wakes::Resource, :type => :model do
       expect(resource.twitter_count).to eq 3477
     end
   end
+
+  describe '#update_pageview_count' do
+    it 'aggregates pageview count of associated locations into the resource' do
+      location_one = build(
+        :location, :path => '/target', :canonical => true, :pageview_counts => {2010 => 201, 2011 => 5000}
+      )
+      location_two = build(
+        :location, :path => '/source1', :canonical => false, :pageview_counts => {2010 => 100, 2011 => 56}
+      )
+
+      resource = create(:resource,
+                        :label => 'Test Resource',
+                        :locations => [location_one, location_two])
+
+      resource.update_pageview_count
+
+      expect(resource.pageview_count).to eq 5357
+    end
+  end
 end
