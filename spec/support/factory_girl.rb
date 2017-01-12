@@ -7,7 +7,7 @@ RSpec.configure do |config|
   config.before(:suite) do
     begin
       DatabaseCleaner.start
-      FactoryGirl.lint
+      FactoryGirl.lint FactoryGirl.factories.reject { |factory| factory.name == :page_views }
     ensure
       DatabaseCleaner.clean
     end
