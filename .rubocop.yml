@@ -198,3 +198,11 @@ Metrics/LineLength:
 
 Metrics/AbcSize:
   Max: 20
+
+# Allow long blocks in specs, disallow elsewhere
+Metrics/BlockLength:
+  Description: 'Avoid long blocks with many lines.'
+  Enabled: true
+  Exclude:
+      - 'spec/**/*'
+  
