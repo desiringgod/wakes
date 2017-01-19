@@ -12,7 +12,7 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 
 env_file = File.join(Wakes::Engine.root, 'local_env.yml')
 if File.exist?(env_file)
-  YAML.load(File.open(env_file)).each do |key, value|
+  YAML.safe_load(File.open(env_file)).each do |key, value|
     ENV[key.to_s] = value
   end
 end
