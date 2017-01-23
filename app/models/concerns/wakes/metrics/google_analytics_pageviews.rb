@@ -5,11 +5,7 @@ module Wakes
       extend ActiveSupport::Concern
 
       included do
-        store_accessor :document, :pageview_count, :pageview_count_updated_through, :pageview_count_checked_at
-
-        def enqueue_pageview_count_update
-          Wakes::GoogleAnalyticsPageviewJob.perform_later(self)
-        end
+        store_accessor :document, :pageview_counts
 
         def google_analytics_profile_id
           if host.blank? || (host == ENV['DEFAULT_HOST'])
@@ -19,24 +15,12 @@ module Wakes
           end
         end
 
-        def self.enqueue_pageview_count_updates(count)
-          ordered_for_analytics_worker.needs_analytics_update.limit(count).each do |location|
-            Wakes::GoogleAnalyticsPageviewJob.perform_later(location)
-          end
+        def pageview_count
+          pageview_counts.sum { |_year, count| count }
         end
 
-        def self.ordered_for_analytics_worker
-          order("document->'pageview_count_checked_at' ASC NULLS FIRST")
-        end
-
-        def self.needs_analytics_update
-          # either it's never been updated
-          # OR it's canonical and it has not been updated through yesterday
-          # yesterday is the most recent day it can be updated through)
-          where(%{(document->>'pageview_count_updated_through') IS NULL \
-                OR ("canonical" = ? AND document->>'pageview_count_updated_through' < ?)},
-                true, 1.day.ago.to_date)
-            .where('host IS NULL OR host = ?', [ENV['DEFAULT_HOST']]) # Only query GA for paths on the current host
+        def pageview_counts
+          super || self.pageview_counts = {}
         end
       end
     end
