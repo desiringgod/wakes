@@ -45,6 +45,13 @@ module Wakeable
     save!
   end
 
+  def update_pageview_count
+    # pageview_count needs to be defined in the app database.
+    return false unless respond_to?(:pageview_count=)
+    self.pageview_count = raw_aggregate_pageview_count
+    save!
+  end
+
   def wakes_enabled?
     Wakes.configuration.enabled && wakes_value_for(:run_if) != false
   end
