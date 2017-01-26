@@ -9,13 +9,12 @@ class Wakes::PageviewCountUpdaterService
   def update_pageview_count
     if pageviews_since_last_update.positive?
       update_location_pageview_count && update_resource_aggregate_count && update_wakeable_aggregate_count
+      # Yes, this will often result in two update operations
+      # Right now, code expressiveness and comprehension seem more important than performance
+      location.update(:pageview_count_checked_at => Time.zone.now)
     else
       false
     end
-  ensure
-    # Yes, this will often result in two update operations
-    # Right now, code expressiveness and comprehension seem more important than performance
-    location.update(:pageview_count_checked_at => Time.zone.now)
   end
 
   def update_location_pageview_count
