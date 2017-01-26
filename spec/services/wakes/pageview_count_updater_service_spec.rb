@@ -4,9 +4,9 @@ require 'rails_helper'
 RSpec.describe Wakes::PageviewCountUpdaterService do
   describe '#update_pageview_count' do
     let(:location) { create(:location, :resource => resource) }
-    let(:location_2) { create(:location, :resource => resource, :canonical => false) }
+    let(:location2) { create(:location, :resource => resource, :canonical => false) }
     let(:pageview_count_updater_service) { Wakes::PageviewCountUpdaterService.new(location) }
-    let(:pageview_count_updater_service_2) { Wakes::PageviewCountUpdaterService.new(location_2) }
+    let(:pageview_count_updater_service_2) { Wakes::PageviewCountUpdaterService.new(location2) }
 
     before do
       Timecop.freeze
@@ -32,20 +32,18 @@ RSpec.describe Wakes::PageviewCountUpdaterService do
 
         allow(pageview_count_updater_service_2).to receive(:pageviews_since_last_update).and_return(12)
         expect(pageview_count_updater_service_2.update_pageview_count).to eq true
-        expect(location_2.pageview_count).to eq 12
-        expect(location_2.resource.pageview_count).to eq 1212
+        expect(location2.pageview_count).to eq 12
+        expect(location2.resource.pageview_count).to eq 1212
       end
 
       it 'returns a false if pageviews_since_last_update are 0' do
         allow(pageview_count_updater_service).to receive(:pageviews_since_last_update).and_return(0)
         expect(pageview_count_updater_service.update_pageview_count).to eq false
-        expect(location.pageview_count_checked_at).to be_within(0.1).of(Time.zone.now)
       end
 
       it 'returns a false if pageviews_since_last_update are negative for some odd reason' do
         allow(pageview_count_updater_service).to receive(:pageviews_since_last_update).and_return(-1200)
         expect(pageview_count_updater_service.update_pageview_count).to eq false
-        expect(location.pageview_count_checked_at).to be_within(0.1).of(Time.zone.now)
       end
 
       it 'raises an error if end date becomes larger than start date' do
@@ -53,13 +51,6 @@ RSpec.describe Wakes::PageviewCountUpdaterService do
         expect do
           pageview_count_updater_service.update_pageview_count
         end.to raise_error(Wakes::PageviewCountUpdaterService::EndDateEarlierThanStartDateError)
-      end
-
-      it 'always rescues, updates date, and then reraises if there is an error' do
-        allow(pageview_count_updater_service).to receive(:pageviews_since_last_update).and_raise(StandardError)
-
-        expect { pageview_count_updater_service.update_pageview_count }.to raise_error(StandardError)
-        expect(location.pageview_count_checked_at).to be_within(0.1).of(Time.zone.now)
       end
     end
 
@@ -84,9 +75,9 @@ RSpec.describe Wakes::PageviewCountUpdaterService do
 
         allow(pageview_count_updater_service_2).to receive(:pageviews_since_last_update).and_return(12)
         expect(pageview_count_updater_service_2.update_pageview_count).to eq true
-        expect(location_2.pageview_count).to eq 12
-        expect(location_2.resource.pageview_count).to eq 1212
-        expect(location_2.resource.wakeable.pageview_count).to eq 1212
+        expect(location2.pageview_count).to eq 12
+        expect(location2.resource.pageview_count).to eq 1212
+        expect(location2.resource.wakeable.pageview_count).to eq 1212
       end
     end
 
@@ -126,9 +117,9 @@ RSpec.describe Wakes::PageviewCountUpdaterService do
 
         allow(pageview_count_updater_service_2).to receive(:pageviews_since_last_update).and_return(12)
         expect(pageview_count_updater_service_2.update_pageview_count).to eq true
-        expect(location_2.pageview_count).to eq 12
-        expect(location_2.resource.pageview_count).to eq 1212
-        expect(location_2.resource.wakeable.pageview_count).to eq 1212
+        expect(location2.pageview_count).to eq 12
+        expect(location2.resource.pageview_count).to eq 1212
+        expect(location2.resource.wakeable.pageview_count).to eq 1212
       end
     end
   end
