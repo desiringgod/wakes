@@ -217,6 +217,14 @@ RSpec.describe Wakeable do
         expect(wakeable.wakes_resource.label).to eq('A Wakeable Model')
         expect(wakeable.wakes_resource).to have_wakes_graph(:canonical_location => '/a-wakeable-model')
       end
+
+      # See "Polymorphic Associations" under http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html
+      it 'overwrites the wakeable_type with the base class' do
+        wakeable = child_model_class.create(:title => 'A Wakeable Model')
+        wakeable.wakes_resource.wakeable_type = child_model_class.to_s
+
+        expect(wakeable.wakes_resource.wakeable_type).to eq child_model_class.base_class.to_s
+      end
     end
 
     context 'parent and child both have wakes' do

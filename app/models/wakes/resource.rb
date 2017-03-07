@@ -21,6 +21,10 @@ class Wakes::Resource < ActiveRecord::Base
 
   validates :label, :presence => true
 
+  def wakeable_type=(class_name)
+    super(class_name.constantize.base_class.to_s)
+  end
+
   def to_s
     <<-EOS
   #{Wakes.color(:yellow, "(#{id}) #{label}")}
