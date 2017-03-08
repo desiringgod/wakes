@@ -3,10 +3,15 @@ require 'rails_helper'
 
 RSpec.describe Wakes::Metrics::GoogleAnalyticsPageviews do
   describe '#pageview_count' do
-    it 'sums all the pageview_counts' do
-      location = create(:location, :pageview_counts => { 2010 => 100, 2011 => 501, 2012 => 201 })
-      puts location.inspect
-      expect(location.pageview_count).to eq(802)
+    before { Timecop.freeze(2015, 10, 1, 12, 0, 0) }
+
+    it 'sums all the pageview_counts and todays pageview count' do
+      location = create(
+        :location,
+        :pageview_counts => { 2010 => 100, 2011 => 501, 2012 => 201 },
+        :todays_pageview_counts => { '2015-10-01' => 20, '2015-09-30' => 30 }
+      )
+      expect(location.pageview_count).to eq(822)
     end
   end
 
