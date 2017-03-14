@@ -7,7 +7,15 @@ class Wakes::GoogleAnalyticsApiWrapper
   PAGE_SIZE = 1_000
 
   def get_page_of_pageviews(page, start_date:, end_date:, profile_id: Wakes.configuration.ga_profiles['default'])
-    results = authorized_analytics_service.get_ga_data(
+    results = get_page(page, start_date, end_date, profile_id)
+    rows = results.rows || []
+    create_page(rows, rows.count < results.items_per_page)
+  end
+
+  private
+
+  def get_page(page, start_date, end_date, profile_id)
+    authorized_analytics_service.get_ga_data(
       "ga:#{profile_id}",
       format_date(start_date),
       format_date(end_date),
@@ -16,10 +24,7 @@ class Wakes::GoogleAnalyticsApiWrapper
       :sort => '-ga:pageviews',
       :start_index => start_index_for_page(page)
     )
-    create_page(results.rows || [], results.rows.count < results.items_per_page)
   end
-
-  private
 
   def format_date(date)
     date.to_date.to_s
