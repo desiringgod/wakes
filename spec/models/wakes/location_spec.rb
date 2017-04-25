@@ -61,4 +61,69 @@ RSpec.describe Wakes::Location, :type => :model do
       expect(location.url).to start_with('http://')
     end
   end
+
+  describe '#update_facebook_count' do
+    subject(:location) { create(:location, :facebook_count => 100) }
+    before { Timecop.freeze(2017, 0o4, 25) }
+
+    context 'when count is greater than the current count' do
+      before { location.update_facebook_count(101) }
+
+      it 'updates facebook_count' do
+        expect(location.facebook_count).to eq 101
+      end
+
+      it 'updates facebook_count_updated_at' do
+        expect(location.facebook_count_updated_at).to eq(Time.zone.now)
+      end
+    end
+
+    context 'when count is equal to the current count' do
+      before { location.update_facebook_count(100) }
+
+      it 'updates facebook_count' do
+        expect(location.facebook_count).to eq 100
+      end
+
+      it 'updates facebook_count_updated_at' do
+        expect(location.facebook_count_updated_at).to eq(Time.zone.now)
+      end
+    end
+
+    context 'when count is less than the current count' do
+      before { location.update_facebook_count(99) }
+
+      it 'does not update facebook_count' do
+        expect(location.facebook_count).to eq 100
+      end
+
+      it 'does not update facebook_count_updated_at' do
+        expect(location.facebook_count_updated_at).to_not eq(Time.zone.now)
+      end
+    end
+
+    context 'when count is nil' do
+      before { location.update_facebook_count(nil) }
+
+      it 'does not update facebook_count' do
+        expect(location.facebook_count).to eq 100
+      end
+
+      it 'does not update facebook_count_updated_at' do
+        expect(location.facebook_count_updated_at).to_not eq(Time.zone.now)
+      end
+    end
+
+    context 'when count is an empty string' do
+      before { location.update_facebook_count('') }
+
+      it 'does not update facebook_count' do
+        expect(location.facebook_count).to eq 100
+      end
+
+      it 'does not update facebook_count_updated_at' do
+        expect(location.facebook_count_updated_at).to_not eq(Time.zone.now)
+      end
+    end
+  end
 end
