@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class TestResponderApp
   def self.call(*_args)
     [200, {}, ['target']]

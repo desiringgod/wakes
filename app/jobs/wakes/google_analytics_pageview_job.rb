@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Wakes::GoogleAnalyticsPageviewJob < ActiveJob::Base
   queue_as :wakes_metrics
 

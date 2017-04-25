@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Wakes::Resource < ActiveRecord::Base
   include Wakes::Redirectors
 

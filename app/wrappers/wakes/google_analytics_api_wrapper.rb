@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'googleauth'
 require 'google/apis/analytics_v3'
 

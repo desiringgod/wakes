@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Wakes
   class Engine < ::Rails::Engine
     # JSON does not include a date or time type.

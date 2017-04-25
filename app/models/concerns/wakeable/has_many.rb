@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Wakeable
   module HasMany
     extend ActiveSupport::Concern

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Wakes::AllPageviewsCountUpdaterService
   def initialize(start_year, end_year = current_year)
     @start_year = start_year
