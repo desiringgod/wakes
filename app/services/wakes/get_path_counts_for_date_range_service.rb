@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'google/apis/analytics_v3'
 
 module Wakes
@@ -67,7 +68,7 @@ module Wakes
         @logger = logger
       end
 
-      %w(warn error info debug fatal).each do |message_type|
+      %w[warn error info debug fatal].each do |message_type|
         define_method(message_type) do |message|
           @logger.send(message_type, prepare_message(message))
         end

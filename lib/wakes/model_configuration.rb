@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 class Wakes::ModelConfiguration
   class UnrecognizedConfigurationOption < StandardError; end
   attr_reader :configuration
 
-  OPTIONS = [:has_many, :path, :label, :run_if, :dependents, :debug].freeze
+  OPTIONS = %i[has_many path label run_if dependents debug].freeze
 
   def initialize(&block)
     @configuration = {}

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Wakes::FacebookCountUpdaterService
   attr_reader :locations, :wrapper
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :page_views, :class => 'Wakes::GoogleAnalyticsApiWrapper::PageViews' do
     sequence(:url) { |n| "/path/#{n}" }

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails/engine'
 require 'wakes/version'
 require 'wakes/engine'
