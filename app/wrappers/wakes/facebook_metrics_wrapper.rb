@@ -22,7 +22,7 @@ class Wakes::FacebookMetricsWrapper
           hash[r['id']] = r.fetch('share').fetch('share_count')
         rescue KeyError
           # Some urls can have no 'share' keys. This is generally in the case when the url isn't valid.
-          Rails.logger.warn "Share count not received for #{r['id']}. Possibly an invalid url?"
+          Rails.logger.warn "Share count not received for #{r['id']}. Response is: #{r}"
           hash[r['id']] = nil
         end
       end
