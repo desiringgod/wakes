@@ -14,7 +14,7 @@ RSpec.describe Wakes::FacebookMetricsWrapper do
   describe '#share_counts' do
     it 'returns a hash of facebook share counts for the urls', :vcr do
       expect(subject.share_counts).to be_an Hash
-      expect(subject.share_counts).to eq('http://www.example.com' => 14_607_817, 'http://www.example.org' => 6373)
+      expect(subject.share_counts).to eq('http://www.example.com' => 35_741_834, 'http://www.example.org' => 15_880)
     end
 
     it 'raises an exception after retrying thrice' do
