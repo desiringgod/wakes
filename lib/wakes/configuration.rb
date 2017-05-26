@@ -16,12 +16,14 @@ module Wakes
   class Configuration
     attr_accessor :enabled
     attr_accessor :ga_profiles
+    attr_accessor :internal_hosts # Hosts to exclude when adding external redirects to Wakes
 
     def initialize
       @enabled = true
       @ga_profiles = {
         'default' => ENV['GOOGLE_ANALYTICS_PROFILE_ID']
       }
+      @internal_hosts = nil
     end
   end
 end
