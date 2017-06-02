@@ -68,6 +68,8 @@ RSpec.describe Wakes::FacebookCountUpdaterService do
     let!(:location_1) { create(:location, :facebook_count => 4) }
     let!(:location_2) { create(:location, :facebook_count => 10) }
     let!(:location_3) { create(:location, :facebook_count => 12) }
+    let!(:legacy_location_1) { create(:location, :non_canonical, :facebook_count => 3) }
+    let!(:legacy_location_2) { create(:location, :non_canonical, :facebook_count => 6) }
 
     subject { described_class.new([location_1, location_2, location_3]) }
 
@@ -78,28 +80,34 @@ RSpec.describe Wakes::FacebookCountUpdaterService do
           .to receive(:new).and_return(facebook_wrapper)
         allow(facebook_wrapper).to receive(:share_counts).and_return(location_1.url => 20,
                                                                      location_2.url => 30,
-                                                                     location_3.url => 40)
+                                                                     location_3.url => 40,
+                                                                     legacy_location_1.url => 50,
+                                                                     legacy_location_2.url => 60)
       end
 
       before do
-        location_1.resource.locations << create(:location, :non_canonical, :facebook_count => 3)
-        location_2.resource.locations << create(:location, :non_canonical, :facebook_count => 6)
+        location_1.resource.locations << legacy_location_1
+        location_2.resource.locations << legacy_location_2
       end
 
-      it 'updates the facebook count of all the locations' do
+      it 'updates the facebook count of all canonical locations' do
         subject.update_facebook_count
         expect(location_1.facebook_count).to eq(20)
         expect(location_2.facebook_count).to eq(30)
         expect(location_3.facebook_count).to eq(40)
+        expect(legacy_location_1.facebook_count).to eq(3) # original value
+        expect(legacy_location_2.facebook_count).to eq(6) # original value
       end
 
-      it 'updates the facebook_count_updated_at for all locations' do
+      it 'updates the facebook_count_updated_at for all canonical locations' do
         time = Time.zone.now
         Timecop.freeze(time)
         subject.update_facebook_count
         expect(location_1.facebook_count_updated_at).to be_within(0.1).of(time)
         expect(location_2.facebook_count_updated_at).to be_within(0.1).of(time)
         expect(location_3.facebook_count_updated_at).to be_within(0.1).of(time)
+        expect(legacy_location_1.facebook_count_updated_at).not_to be_within(0.1).of(time)
+        expect(legacy_location_2.facebook_count_updated_at).not_to be_within(0.1).of(time)
       end
 
       it 'aggregates the facebook counts of associated resource' do
