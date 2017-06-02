@@ -8,6 +8,8 @@ module Wakes
       included do
         store_accessor :document, :facebook_count, :facebook_count_updated_at
 
+        before_validation :prevent_decreasing_update, on: :update
+
         def enqueue_facebook_count_update
           Wakes::UpdateFacebookMetricsJob.perform_later(self)
         end
@@ -17,12 +19,25 @@ module Wakes
         end
 
         def update_facebook_count(new_facebook_count)
-          if new_facebook_count.to_i >= facebook_count.to_i
-            update(:facebook_count => new_facebook_count.to_i, :facebook_count_updated_at => Time.zone.now)
-          else
+          update(:facebook_count => new_facebook_count.to_i, :facebook_count_updated_at => Time.zone.now)
+        end
+
+        protected
+
+        def prevent_decreasing_update
+          if new_count < old_count
             Rails.logger.error "Received a request to update facebook metrics for location #{path}, " \
-                              "from #{facebook_count.to_i} to #{new_facebook_count.to_i}. Ignoring it!"
+                              "from #{old_count} to #{new_count}. Ignoring it!"
+            throw :abort
           end
+        end
+
+        def old_count
+          changes[:document]&.first.try(:[], :facebook_count).to_i
+        end
+
+        def new_count
+          changes[:document]&.second.try(:[], :facebook_count).to_i
         end
       end
     end
