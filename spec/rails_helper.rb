@@ -5,7 +5,7 @@ ENV['RAILS_ENV'] ||= 'test'
 
 require 'combustion'
 Combustion.initialize! :all do
-  config.middleware.use 'Wakes::Middleware::Redirector'
+  config.middleware.use Wakes::Middleware::Redirector
 end
 
 # Prevent database truncation if the environment is production

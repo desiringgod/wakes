@@ -1,4 +1,4 @@
-class CreateWakesResources < ActiveRecord::Migration
+class CreateWakesResources < ActiveRecord::Migration[5.0]
   def change
     create_table :wakes_resources do |t|
       t.string :label
