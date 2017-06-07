@@ -16,7 +16,7 @@ class Wakes::GoogleAnalyticsApiWrapper
   private
 
   def get_page(page, start_date, end_date, profile_id)
-    authorized_analytics_service.get_ga_data(
+    authorized_analytics_service.get_datum_ga(
       "ga:#{profile_id}",
       format_date(start_date),
       format_date(end_date),
