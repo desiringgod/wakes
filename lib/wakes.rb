@@ -7,6 +7,7 @@ require 'wakes/configuration'
 require 'wakes/model_configuration'
 require 'wakes/redirect_mapper'
 require 'wakes/middleware/redirector'
+require 'wakes/external_redirect_mapper'
 
 require 'redis-rails'
 require 'redis-namespace'
@@ -56,6 +57,10 @@ module Wakes
     Wakes::Resource.find_each do |resource|
       resource.update_attribute(:legacy_paths_in_redis, nil)
     end
+  end
+
+  def self.resource_for_external_url(url)
+    ExternalRedirectMapper.new(url).resource
   end
 
   COLORS = {
