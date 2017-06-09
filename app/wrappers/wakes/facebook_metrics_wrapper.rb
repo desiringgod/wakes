@@ -8,7 +8,7 @@ class Wakes::FacebookMetricsWrapper
   class FacebookError < StandardError; end
   class FacebookNullResponse < StandardError; end
   class FacebookRateLimitExceeded < StandardError; end
-  API_URL = 'https://graph.facebook.com/v2.5'
+  API_URL = 'https://graph.facebook.com/v2.8'
   attr_reader :urls
 
   def initialize(*urls)
