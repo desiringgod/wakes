@@ -8,7 +8,7 @@ module Wakes
       included do
         store_accessor :document, :facebook_count, :facebook_count_updated_at
 
-        before_validation :prevent_update_of_legacy_location, :prevent_decreasing_update, on: :update
+        before_validation :prevent_update_of_legacy_location, :prevent_decreasing_update, :on => :update
 
         def enqueue_facebook_count_update
           Wakes::UpdateFacebookMetricsJob.perform_later(self)
@@ -19,23 +19,24 @@ module Wakes
         end
 
         def update_facebook_count(new_facebook_count)
-          update(:facebook_count => new_facebook_count.to_i, :facebook_count_updated_at => Time.zone.now)
+          update(:facebook_count => new_facebook_count.to_i, :facebook_count_updated_at => Time.zone.now) ||
+            restore_attributes
         end
 
         protected
 
         def prevent_update_of_legacy_location
           if facebook_count_will_change? && !canonical
-            Rails.logger.error "Received a request to update facebook metrics for non-canonical location #{path}, " \
-                              "from #{old_count} to #{new_count}. Ignoring it!"
+            Rails.logger.error 'Received a request to update facebook metrics for non-canonical location ' \
+                              "#{path}, from #{old_count} to #{new_count}. Ignoring it!"
             throw :abort
           end
         end
 
         def prevent_decreasing_update
           if new_count < old_count
-            Rails.logger.error "Received a request to update facebook metrics for location #{path}, " \
-                              "from #{old_count} to #{new_count}. Ignoring it!"
+            Rails.logger.error 'Received a request to update facebook metrics for location ' \
+                              "#{path}, from #{old_count} to #{new_count}. Ignoring it!"
             throw :abort
           end
         end
