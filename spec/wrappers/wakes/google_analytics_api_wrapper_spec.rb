@@ -6,7 +6,9 @@ RSpec.describe Wakes::GoogleAnalyticsApiWrapper do
   describe '#get_page_of_pageviews' do
     let(:rows) { [['/path', 151], ['/path/2', 500]] }
     let(:results) { double('Results', :rows => rows, :items_per_page => 2) }
-    let(:analytics_service) { double('AnalyticsService', :get_ga_data => results) }
+    let(:analytics_service) do
+      instance_double('AnalyticsService', :get_ga_data => results)
+    end
     let(:start_date) { Time.new(2017, 10, 10).to_date }
     let(:end_date) { Time.new(2017, 12, 12).to_date }
 
