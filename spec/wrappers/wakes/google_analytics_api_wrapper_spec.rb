@@ -6,9 +6,7 @@ RSpec.describe Wakes::GoogleAnalyticsApiWrapper do
   describe '#get_page_of_pageviews' do
     let(:rows) { [['/path', 151], ['/path/2', 500]] }
     let(:results) { double('Results', :rows => rows, :items_per_page => 2) }
-    let(:analytics_service) do
-      instance_double(Google::Apis::AnalyticsV3::AnalyticsService, :get_datum_ga => results)
-    end
+    let(:analytics_service) { double('AnalyticsService', :get_ga_data => results) }
     let(:start_date) { Time.new(2017, 10, 10).to_date }
     let(:end_date) { Time.new(2017, 12, 12).to_date }
 
@@ -16,8 +14,8 @@ RSpec.describe Wakes::GoogleAnalyticsApiWrapper do
       allow(subject).to receive(:authorized_analytics_service).and_return(analytics_service)
     end
 
-    it 'calls #get_datum_ga on GA' do
-      expect(analytics_service).to receive(:get_datum_ga).with(
+    it 'calls #get_ga_data on GA' do
+      expect(analytics_service).to receive(:get_ga_data).with(
         'ga:profile',
         '2017-10-10',
         '2017-12-12',
@@ -41,7 +39,7 @@ RSpec.describe Wakes::GoogleAnalyticsApiWrapper do
 
     context 'page is not 1' do
       it 'correctly calculates the new start index' do
-        expect(analytics_service).to receive(:get_datum_ga).with(
+        expect(analytics_service).to receive(:get_ga_data).with(
           any_args,
           a_hash_including(:start_index => 2001)
         )
