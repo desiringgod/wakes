@@ -152,7 +152,7 @@ module Wakes
       # ]
       #
       def potential_query_strings
-        params = request.query_string.split('&')
+        params = request.query_string.split('&').first(5)
         @potential_query_strings ||= (0..params.size).to_a.reverse.map do |n|
           params.permutation(n).map { |permutation| permutation.join('&') }
         end.flatten
