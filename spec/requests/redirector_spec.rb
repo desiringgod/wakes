@@ -82,5 +82,34 @@ RSpec.describe 'redirects' do
       expect(response.location).to be_in(['/target-two?page=2', '/target-one?lang=es'])
       expect(response.code).to eq('301')
     end
+
+    describe 'truncation' do
+      let(:long_string_of_params) { 'param1=1&param2=2&param3=3&param4=4&param5=5&param6=6' }
+
+      let!(:resource2) do
+        create(:resource).tap do |resource2|
+          create(:location, :path => '/target2', :canonical => true, :resource => resource2)
+          create(:location, :path => '/test2', :canonical => false, :resource => resource2)
+        end
+      end
+
+      it 'passes through all params, regardless of what truncation is happening for matching' do
+        get "/test2?#{long_string_of_params}"
+        expect(response).to redirect_to("/target2?#{long_string_of_params}")
+      end
+
+      it 'ignores params after the first 5 params when calculating a match' do
+        create(:location, :path => '/test2?lang=es', :canonical => false, :resource => resource)
+
+        get "/test2?#{long_string_of_params}"
+        expect(response).to redirect_to("/target2?#{long_string_of_params}")
+
+        get "/test2?#{long_string_of_params}&lang=es"
+        expect(response).to redirect_to("/target2?#{long_string_of_params}&lang=es")
+
+        get "/test2?lang=es&#{long_string_of_params}"
+        expect(response).to redirect_to("/es/target?#{long_string_of_params}")
+      end
+    end
   end
 end
