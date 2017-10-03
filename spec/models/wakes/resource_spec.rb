@@ -87,10 +87,10 @@ RSpec.describe Wakes::Resource, :type => :model do
                           :label => 'Test Resource',
                           :locations => [location_one])
 
-        expect(resource.to_s).to eq(<<-EOS)
+        expect(resource.to_s).to eq(<<-TEXT)
   \e[33m(#{resource.id}) Test Resource\e[0m
     [] ----> /target
-        EOS
+        TEXT
       end
 
       it 'with 1 legacy location' do
@@ -101,10 +101,10 @@ RSpec.describe Wakes::Resource, :type => :model do
                           :label => 'Test Resource',
                           :locations => [location_one, location_two])
 
-        expect(resource.to_s).to eq(<<-EOS)
+        expect(resource.to_s).to eq(<<-TEXT)
   \e[33m(#{resource.id}) Test Resource\e[0m
     [/source1] ----> /target
-        EOS
+        TEXT
       end
 
       it 'with 2 legacy locations' do
@@ -116,10 +116,10 @@ RSpec.describe Wakes::Resource, :type => :model do
                           :label => 'Test Resource',
                           :locations => [location_one, location_two, location_three])
 
-        expect(resource.to_s).to eq(<<-EOS)
+        expect(resource.to_s).to eq(<<-TEXT)
   \e[33m(#{resource.id}) Test Resource\e[0m
     [/source1, /source2] ----> /target
-        EOS
+        TEXT
       end
     end
   end
