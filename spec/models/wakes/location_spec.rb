@@ -54,11 +54,11 @@ RSpec.describe Wakes::Location, :type => :model do
     end
 
     it 'picks the protocol from the protocol argument passed to it' do
-      expect(location.url(:protocol => 'https')).to start_with('https://')
+      expect(location.url(:protocol => 'ftp')).to start_with('ftp://')
     end
 
-    it 'defaults to the http protocol' do
-      expect(location.url).to start_with('http://')
+    it 'defaults to the https protocol' do
+      expect(location.url).to start_with('https://')
     end
   end
 

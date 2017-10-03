@@ -15,7 +15,7 @@ class Wakes::Location < ActiveRecord::Base
     path_or_url.sub(%r{^https?://}, '')
   end
 
-  def url(protocol: 'http', host_override: nil)
+  def url(protocol: 'https', host_override: nil)
     calculated_hostname = host_override || host || ENV['DEFAULT_HOST']
     "#{protocol}://#{calculated_hostname}#{path}"
   end
