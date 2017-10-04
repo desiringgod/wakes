@@ -4,7 +4,7 @@ class Wakes::FacebookCountUpdaterService
   attr_reader :locations, :wrapper
 
   def initialize(*locations)
-    @locations = locations.flatten
+    @locations = locations.flatten.select(&:canonical)
     @wrapper = Wakes::FacebookMetricsWrapper
   end
 
