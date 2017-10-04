@@ -27,10 +27,10 @@ class Wakes::Resource < ActiveRecord::Base
   end
 
   def to_s
-    <<-EOS
+    <<-TEXT
   #{Wakes.color(:yellow, "(#{id}) #{label}")}
     [#{legacy_locations.map(&:label).join(', ')}] ----> #{canonical_location.label}
-    EOS
+    TEXT
   end
 
   def update_facebook_count

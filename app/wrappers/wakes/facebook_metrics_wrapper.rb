@@ -74,6 +74,7 @@ class Wakes::FacebookMetricsWrapper
   end
 
   # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Lint/RescueWithoutErrorClass
   def retries(times)
     attempts = 0
     begin

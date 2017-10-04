@@ -28,7 +28,7 @@ RSpec.describe Wakes do
         expect(wakes_resource.wakeable).to eq(wakeable)
         expect(wakes_resource.identifier).to eq('some-identifier')
         expect(wakes_resource.locations.first.path).to eq('/some/path')
-        expect(wakes_resource.locations.first.url).to eq("http://#{ENV['DEFAULT_HOST']}/some/path")
+        expect(wakes_resource.locations.first.url).to eq("https://#{ENV['DEFAULT_HOST']}/some/path")
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe Wakes do
           expect(wakes_resource.wakeable).to eq(wakeable)
           expect(wakes_resource.identifier).to eq('some-identifier')
           expect(wakes_resource.locations.first.path).to eq('/some/path')
-          expect(wakes_resource.locations.first.url).to eq("http://#{ENV['DEFAULT_HOST']}/some/path")
+          expect(wakes_resource.locations.first.url).to eq("https://#{ENV['DEFAULT_HOST']}/some/path")
         end
       end
 
@@ -72,7 +72,7 @@ RSpec.describe Wakes do
           expect(wakes_resource.wakeable).to eq(wakeable)
           expect(wakes_resource.identifier).to eq('some-identifier')
           expect(wakes_resource.locations.first.path).to eq('/some/path')
-          expect(wakes_resource.locations.first.url).to eq('http://solidjoys.desiringgod.org/some/path')
+          expect(wakes_resource.locations.first.url).to eq('https://solidjoys.desiringgod.org/some/path')
         end
       end
 
@@ -113,7 +113,7 @@ RSpec.describe Wakes do
           expect(wakes_resource.wakeable).to eq(wakeable)
           expect(wakes_resource.identifier).to eq('some-identifier')
           expect(wakes_resource.locations.first.path).to eq('/some/path')
-          expect(wakes_resource.locations.first.url).to eq("http://#{ENV['DEFAULT_HOST']}/some/path")
+          expect(wakes_resource.locations.first.url).to eq("https://#{ENV['DEFAULT_HOST']}/some/path")
         end
       end
 
@@ -135,7 +135,7 @@ RSpec.describe Wakes do
           expect(wakes_resource.wakeable).to eq(wakeable)
           expect(wakes_resource.identifier).to eq('some-identifier')
           expect(wakes_resource.locations.first.path).to eq('/some/path')
-          expect(wakes_resource.locations.first.url).to eq('http://solidjoys.desiringgod.org/some/path')
+          expect(wakes_resource.locations.first.url).to eq('https://solidjoys.desiringgod.org/some/path')
         end
       end
 
