@@ -16,11 +16,13 @@ module Wakes
           order("document->'facebook_count_updated_at' ASC NULLS FIRST")
         end
 
-        def update_facebook_count(new_facebook_count)
+        def update_facebook_count(new_facebook_count, logger = Rails.logger)
           if new_facebook_count.to_i >= facebook_count.to_i
+            logger.info "received a request to update facebook metrics for location #{path}, " \
+                              "from #{facebook_count.to_i} to #{new_facebook_count.to_i}. updating it!"
             update(:facebook_count => new_facebook_count.to_i, :facebook_count_updated_at => Time.zone.now)
           else
-            Rails.logger.error "Received a request to update facebook metrics for location #{path}, " \
+            logger.error "Received a request to update facebook metrics for location #{path}, " \
                               "from #{facebook_count.to_i} to #{new_facebook_count.to_i}. Ignoring it!"
           end
         end
