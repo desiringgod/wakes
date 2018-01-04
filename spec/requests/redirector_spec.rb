@@ -15,14 +15,12 @@ RSpec.describe 'redirects' do
       get '/test'
 
       expect(response).to redirect_to('/target')
-      expect(response.headers['Turbolinks-Location']).to eq('/target')
     end
 
     it 'does not redirect when it should not redirect' do
       get '/target'
 
       expect(response).to have_http_status(:success)
-      expect(response.headers['Turbolinks-Location']).to be_nil
     end
   end
 
