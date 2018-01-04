@@ -1,7 +1,7 @@
 version: 2.0
 executorType: docker
 containerInfo:
-  - image: ruby:2.3.1
+  - image: ruby:2.5.0
     env:
       - PGHOST=localhost
       - PGUSER=ubuntu

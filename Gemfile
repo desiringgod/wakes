@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-ruby '2.3.1'
+ruby '2.5.0'
 
 # Specify your gem's dependencies in wakes.gemspec
 gemspec
