@@ -109,5 +109,36 @@ RSpec.describe 'redirects' do
         expect(response).to redirect_to("/es/target?#{long_string_of_params}")
       end
     end
+
+    describe 'redirects with associated hosts' do
+      let!(:resource3) do
+        create(:resource).tap do |resource3|
+          create(:location, :path => '/canonical', :canonical => true, :resource => resource3)
+        end
+      end
+
+      Wakes.configure do |config|
+        config.additional_hosts_to_redirect = ['alternative.host']
+      end
+
+      it "redirects when the redirect rule's host is in Wakes.config.domains" do
+        create(:location, :path => '/test-redirecting-host',
+                          :host => 'alternative.host',
+                          :canonical => false,
+                          :resource => resource3)
+
+        get '/test-redirecting-host'
+        expect(response).to redirect_to('/canonical')
+      end
+
+      it "does not redirect when the redirect rule's host is not in Wakes.config.domains" do
+        create(:location, :path => '/test-nonredirecting-host',
+                          :host => 'some.other.host',
+                          :canonical => false,
+                          :resource => resource3)
+
+        expect { get '/test-nonredirecting-host' }.to raise_error(ActionController::RoutingError)
+      end
+    end
   end
 end
