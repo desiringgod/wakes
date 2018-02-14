@@ -8,3 +8,7 @@ ruby '2.5.0'
 gemspec
 
 gem 'byebug'
+
+group :test do
+  gem 'pg', '< 1' # fixed in the next rails release: https://github.com/rails/rails/pull/31671
+end
