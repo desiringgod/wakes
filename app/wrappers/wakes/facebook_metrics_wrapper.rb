@@ -8,7 +8,7 @@ class Wakes::FacebookMetricsWrapper
   class FacebookError < StandardError; end
   class FacebookNullResponse < StandardError; end
   class FacebookRateLimitExceeded < StandardError; end
-  API_URL = 'https://graph.facebook.com/v2.8'
+  API_URL = 'https://graph.facebook.com/v3.0'
   attr_reader :urls
 
   def initialize(*urls)
@@ -19,9 +19,9 @@ class Wakes::FacebookMetricsWrapper
     {}.tap do |hash|
       individual_responses.map do |r|
         begin
-          hash[r['id']] = r.fetch('share').fetch('share_count')
+          hash[r['id']] = r.fetch('og_object').fetch('engagement').fetch('count')
         rescue KeyError
-          # Some urls can have no 'share' keys. This is generally in the case when the url isn't valid.
+          # Some urls can have no 'og_object' keys. This is generally in the case when the url isn't valid.
           Rails.logger.warn "Share count not received for #{r['id']}. Response is: #{r}"
           hash[r['id']] = nil
         end
@@ -68,7 +68,7 @@ class Wakes::FacebookMetricsWrapper
   def batched_url_requests
     [].tap do |array|
       urls.each do |url|
-        array << {'method' => 'GET', 'relative_url' => "?id=#{url}"}
+        array << {'method' => 'GET', 'relative_url' => "?id=#{url}&fields=og_object{engagement{count}}"}
       end
     end.to_json
   end
