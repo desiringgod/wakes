@@ -18,13 +18,7 @@ class Wakes::FacebookMetricsWrapper
   def share_counts
     {}.tap do |hash|
       individual_responses.map do |r|
-        begin
-          hash[r['id']] = r.fetch('og_object').fetch('engagement').fetch('count')
-        rescue KeyError
-          # Some urls can have no 'og_object' keys. This is generally in the case when the url isn't valid.
-          Rails.logger.warn "Share count not received for #{r['id']}. Response is: #{r}"
-          hash[r['id']] = nil
-        end
+        hash[r['id']] = r.dig('og_object', 'engagement', 'count')
       end
     end
   end
