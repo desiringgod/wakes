@@ -159,12 +159,22 @@ Style/TrailingCommaInArguments:
   Enabled: true
   EnforcedStyleForMultiline: no_comma
 
-Style/TrailingCommaInLiteral:
-  # If `comma`, the cop requires a comma after the last item in an array or
-  # hash, but only when each item is on its own line.
+Style/TrailingCommaInArrayLiteral:
+  # If `comma`, the cop requires a comma after the last item in an array,
+  # but only when each item is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last item of all
-  # non-empty array and hash literals.
-  Description: 'Checks for trailing comma in array and hash literals.'
+  # non-empty array literals.
+  Description: 'Checks for trailing comma in array literals.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
+
+Style/TrailingCommaInHashLiteral:
+  # If `comma`, the cop requires a comma after the last item in a hash,
+  # but only when each item is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all
+  # non-empty hash literals.
+  Description: 'Checks for trailing comma in hash literals.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
   Enabled: true
   EnforcedStyleForMultiline: no_comma
