@@ -591,7 +591,7 @@ RSpec.describe Wakeable do
       wakeable = model_class.create(:title => 'Some Title')
       wakeable.title = 'Some New Title'
       wakeable.save
-      expect(Wakes::REDIS.get('/some-title')).to eq('/some-new-title')
+      expect(Wakes.redis.get('/some-title')).to eq('/some-new-title')
     end
   end
 

@@ -12,7 +12,9 @@ require 'redis'
 require 'redis-namespace'
 
 module Wakes
-  REDIS = Redis::Namespace.new(:wakes, :redis => $redis || Redis.new(:url => ENV[ENV['REDIS_PROVIDER'] || 'REDIS_URL']))
+  def self.redis
+    @redis ||= Redis::Namespace.new(:wakes, :redis => $redis || Redis.new(:url => ENV[ENV['REDIS_PROVIDER'] || 'REDIS_URL']))
+  end
 
   def self.logger
     @logger || Rails.logger
@@ -50,8 +52,8 @@ module Wakes
   end
 
   def self.destroy_redis_graph
-    if (keys = Wakes::REDIS.keys).present?
-      Wakes::REDIS.del(*keys)
+    if (keys = redis.keys).present?
+      redis.del(*keys)
     end
     Wakes::Resource.find_each do |resource|
       resource.update_attribute(:legacy_paths_in_redis, nil)
