@@ -8,11 +8,11 @@ require 'wakes/model_configuration'
 require 'wakes/redirect_mapper'
 require 'wakes/middleware/redirector'
 
-require 'redis-rails'
+require 'redis'
 require 'redis-namespace'
 
 module Wakes
-  REDIS = Redis::Namespace.new(:wakes, :redis => Redis.new(:url => ENV[ENV['REDIS_PROVIDER'] || 'REDIS_URL']))
+  REDIS = Redis::Namespace.new(:wakes, :redis => $redis || Redis.new(:url => ENV[ENV['REDIS_PROVIDER'] || 'REDIS_URL']))
 
   def self.logger
     @logger || Rails.logger
