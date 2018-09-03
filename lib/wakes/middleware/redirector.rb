@@ -120,7 +120,7 @@ module Wakes
       # ]
       #
       def potential_targets
-        @potential_targets ||= Wakes::REDIS.mget(potential_fullpaths)
+        @potential_targets ||= Wakes.redis.mget(potential_fullpaths)
       end
 
       # For a fullpath like "/path?a=1&b=2&c=3", an array similar to the following is returned:

@@ -192,7 +192,7 @@ RSpec.describe Wakes do
     describe '::create_redis_graph' do
       before do
         # clear out anything that got set up during initialization
-        Wakes::REDIS.del Wakes::REDIS.keys
+        Wakes.redis.del Wakes.redis.keys
         resource_one.update_attribute(:legacy_paths_in_redis, nil)
         resource_two.update_attribute(:legacy_paths_in_redis, nil)
         resource_three.update_attribute(:legacy_paths_in_redis, nil)
@@ -201,14 +201,14 @@ RSpec.describe Wakes do
       end
 
       it 'stores the entire (local) wakes redirector graph into redis' do
-        expect(Wakes::REDIS.get('/legacy-location-one')).to eq('/canonical-location-one')
-        expect(Wakes::REDIS.get('/legacy-location-two')).to eq('/canonical-location-one')
-        expect(Wakes::REDIS.get('/legacy-location-three')).to eq('/canonical-location-two')
-        expect(Wakes::REDIS.get('/legacy-location-four')).to eq('/canonical-location-two')
+        expect(Wakes.redis.get('/legacy-location-one')).to eq('/canonical-location-one')
+        expect(Wakes.redis.get('/legacy-location-two')).to eq('/canonical-location-one')
+        expect(Wakes.redis.get('/legacy-location-three')).to eq('/canonical-location-two')
+        expect(Wakes.redis.get('/legacy-location-four')).to eq('/canonical-location-two')
       end
 
       it "doesn't store paths from other hosts in redis" do
-        expect(Wakes::REDIS.get('/legacy-location-five')).to be_nil
+        expect(Wakes.redis.get('/legacy-location-five')).to be_nil
       end
     end
 
@@ -220,11 +220,11 @@ RSpec.describe Wakes do
         resource_two.reload
         resource_three.reload
 
-        expect(Wakes::REDIS.get('/legacy-location-one')).to be_nil
-        expect(Wakes::REDIS.get('/legacy-location-two')).to be_nil
-        expect(Wakes::REDIS.get('/legacy-location-three')).to be_nil
-        expect(Wakes::REDIS.get('/legacy-location-four')).to be_nil
-        expect(Wakes::REDIS.get('/legacy-location-five')).to be_nil
+        expect(Wakes.redis.get('/legacy-location-one')).to be_nil
+        expect(Wakes.redis.get('/legacy-location-two')).to be_nil
+        expect(Wakes.redis.get('/legacy-location-three')).to be_nil
+        expect(Wakes.redis.get('/legacy-location-four')).to be_nil
+        expect(Wakes.redis.get('/legacy-location-five')).to be_nil
         expect(resource_one.legacy_paths_in_redis).to be_blank
         expect(resource_two.legacy_paths_in_redis).to be_blank
         expect(resource_three.legacy_paths_in_redis).to be_blank

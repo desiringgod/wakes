@@ -19,7 +19,7 @@ module Wakes
         legacy_locations.reload
         legacy_paths_in_redis = legacy_locations.map do |legacy_location|
           if Wakes.configuration.hosts_to_redirect.include?(legacy_location.host)
-            Wakes::REDIS.set(legacy_location.path, canonical_location.path_or_url)
+            Wakes.redis.set(legacy_location.path, canonical_location.path_or_url)
           end
           legacy_location.path
         end
@@ -29,7 +29,7 @@ module Wakes
       def destroy_redirect_graph
         reload
         if legacy_paths_in_redis.present?
-          Wakes::REDIS.del(legacy_paths_in_redis)
+          Wakes.redis.del(legacy_paths_in_redis)
           update_attribute(:legacy_paths_in_redis, nil)
         end
       end
