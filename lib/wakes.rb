@@ -8,7 +8,7 @@ require 'wakes/model_configuration'
 require 'wakes/redirect_mapper'
 require 'wakes/middleware/redirector'
 
-require 'redis-rails'
+require 'redis'
 require 'redis-namespace'
 
 module Wakes
