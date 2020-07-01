@@ -1,0 +1,42 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ruby:2.5.0
+        environment:
+          - PGHOST=localhost
+          - PGUSER=ubuntu
+      - image: postgres:9.5.2
+        environment:
+          - POSTGRES_USER=ubuntu
+          - POSTGRES_DB=circle_test
+      - image: redis:2.8.6
+    working_directory: /home/ubuntu/wakes
+    environment:
+      - RAILS_ENV: test
+      - RACK_ENV: test
+      - DATABASE_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: wakes-{{ .Branch }}-{{ checksum "wakes.gemspec" }}
+
+      - run:
+          name: "Dependencies"
+          command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
+      - run:
+          name: "RSpec"
+          command: bundle exec rspec --format documentation --color --format RspecJunitFormatter --out /tmp/circle-junit.lR1NJfo/rspec/rspec.xml
+      - run:
+          command: bundle exec rubocop -d
+
+      - save_cache:
+          key: wakes-{{ .Branch }}-{{ checksum "wakes.gemspec" }}
+          paths:
+            - /home/ubuntu/.bundle
+            - /home/ubuntu/.go_workspace
+            - /home/ubuntu/.m2
+            - /home/ubuntu/.gradle
+            - /home/ubuntu/.ivy2
+            - /home/ubuntu/wakes/vendor/bundle
