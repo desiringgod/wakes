@@ -2,10 +2,10 @@
 http_interactions:
 - request:
     method: post
-    uri: https://graph.facebook.com/v3.0
+    uri: https://graph.facebook.com/v7.0
     body:
       encoding: UTF-8
-      string: batch=%5B%7B%22method%22%3A%22GET%22%2C%22relative_url%22%3A%22%3Fid%3Dhttp%3A%2F%2Fwww.example.com%5Cu0026fields%3Dog_object%7Bengagement%7Bcount%7D%7D%22%7D%2C%7B%22method%22%3A%22GET%22%2C%22relative_url%22%3A%22%3Fid%3Dhttp%3A%2F%2Fwww.example.org%5Cu0026fields%3Dog_object%7Bengagement%7Bcount%7D%7D%22%7D%5D&access_token=1420797768191964%7Cq63gy9OqxxZscrhQBAi1wNZRgKM&include_headers=false
+      string: batch=%5B%7B%22method%22%3A%22GET%22%2C%22relative_url%22%3A%22%3Fid%3Dhttp%3A%2F%2Fwww.example.com%5Cu0026fields%3Dog_object%7Bengagement%7Bcount%7D%7D%22%7D%2C%7B%22method%22%3A%22GET%22%2C%22relative_url%22%3A%22%3Fid%3Dhttp%3A%2F%2Fwww.example.org%5Cu0026fields%3Dog_object%7Bengagement%7Bcount%7D%7D%22%7D%5D&access_token=<access-token>&include_headers=false
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -18,37 +18,41 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Pragma:
-      - no-cache
-      Cache-Control:
-      - private, no-cache, no-store, must-revalidate
-      Facebook-Api-Version:
-      - v3.0
-      Expires:
-      - Sat, 01 Jan 2000 00:00:00 GMT
-      X-Fb-Rev:
-      - '3900912'
-      Content-Type:
-      - application/json; charset=UTF-8
-      X-Fb-Trace-Id:
-      - B9dnobp+oKe
-      Strict-Transport-Security:
-      - max-age=15552000; preload
       Vary:
       - Accept-Encoding
+      Content-Type:
+      - application/json; charset=UTF-8
+      Facebook-Api-Version:
+      - v7.0
+      Strict-Transport-Security:
+      - max-age=15552000; preload
+      Pragma:
+      - no-cache
+      X-Fb-Rev:
+      - '1002324143'
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - private, no-cache, no-store, must-revalidate
+      X-Fb-Trace-Id:
+      - Foj3MwZC5Uj
+      X-Fb-Request-Id:
+      - Ah81cuKXOL9jd-3WQUjU4Pu
+      Expires:
+      - Sat, 01 Jan 2000 00:00:00 GMT
       X-Fb-Debug:
-      - zV6hqABf4tVicJrj9cuzIEE27qz4qIzyD+436K8z98e/KQhOZ3ylBYVLKS4u8IJuM9Po8uchPIZpVlW11thuhg==
+      - Nw1lJntZMWZZn4VQscobO678LhA1NbHlb0clmvhXj2y2T3joa6RnDn2VXfKnTOMnsm+djjiUAPI6/eOIv+NjpQ==
       Date:
-      - Fri, 11 May 2018 21:56:58 GMT
+      - Thu, 02 Jul 2020 18:56:05 GMT
+      Alt-Svc:
+      - h3-29=":443"; ma=3600,h3-27=":443"; ma=3600
       Connection:
       - keep-alive
       Content-Length:
-      - '162'
+      - '159'
     body:
       encoding: ASCII-8BIT
-      string: '[{"code":200,"body":"{\"og_object\":{\"engagement\":{\"count\":34853332},\"id\":\"395320319544\"},\"id\":\"http:\\\/\\\/www.example.com\"}"},{"code":200,"body":"{\"og_object\":{\"engagement\":{\"count\":9651},\"id\":\"10150286660055425\"},\"id\":\"http:\\\/\\\/www.example.org\"}"}]'
-    http_version: 
-  recorded_at: Fri, 11 May 2018 21:56:58 GMT
+      string: '[{"code":200,"body":"{\"og_object\":{\"engagement\":{\"count\":70859243},\"id\":\"395320319544\"},\"id\":\"http:\\\/\\\/www.example.com\"}"},{"code":200,"body":"{\"og_object\":{\"engagement\":{\"count\":14540},\"id\":\"449785557541\"},\"id\":\"http:\\\/\\\/www.example.org\"}"}]'
+    http_version:
+  recorded_at: Thu, 02 Jul 2020 18:56:05 GMT
 recorded_with: VCR 3.0.3

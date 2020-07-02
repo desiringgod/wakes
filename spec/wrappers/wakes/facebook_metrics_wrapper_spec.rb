@@ -8,7 +8,7 @@ RSpec.describe Wakes::FacebookMetricsWrapper do
   # NOTE these tests will need a FACEBOOK API TOKEN when re-recording
   # Remember to remove the API TOKEN from vcr cassettes after recording!
   # before do
-  #   ENV['FACEBOOK_API_TOKEN'] = '<facebook-api-token'
+  #   ENV['FACEBOOK_API_TOKEN'] = '<facebook-api-token>'
   # end
 
   describe '#share_counts' do
