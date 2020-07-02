@@ -15,7 +15,7 @@ AllCops:
     - 'script/**/*'
     - 'vendor/**/*'
     - 'bin/**/*'
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.5
 
 Style/HashSyntax:
   Description: >-
@@ -28,7 +28,7 @@ Layout/TrailingWhitespace:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace'
   Enabled: true
 
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Description: 'Checks trailing blank lines and final newline.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#newline-eof'
   Enabled: true
@@ -188,7 +188,7 @@ Style/WordArray:
 
 # Allow use of FlipFlop operator. It might be removed in Ruby 3.0, and it's a little
 # obscure, but other than that, there seems to be no downside.
-Style/FlipFlop:
+Lint/FlipFlop:
   Description: 'Checks for flip flops'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-flip-flops'
   Enabled: false
@@ -204,7 +204,7 @@ Style/Next:
   Enabled: false
 
 # Keep things fitting nicely on github
-Metrics/LineLength:
+Layout/LineLength:
   Max: 116
   AllowURI: true
 
@@ -217,4 +217,4 @@ Metrics/BlockLength:
   Enabled: true
   Exclude:
       - 'spec/**/*'
-  
+      - 'wakes.gemspec'
