@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'google-api-client'
   spec.add_dependency 'httparty', '~> 0.13'
+  spec.add_dependency 'rails', '>= 4.2.4', '< 6.0.0'
   spec.add_dependency 'redis'
   spec.add_dependency 'redis-namespace'
 
@@ -39,7 +40,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'guard-rubocop'
   spec.add_development_dependency 'pg'
-  spec.add_development_dependency 'rails', '>= 4.2.4', '< 6.0.0'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec-rails'
   spec.add_development_dependency 'rspec_junit_formatter'
