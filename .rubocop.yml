@@ -218,3 +218,6 @@ Metrics/BlockLength:
   Exclude:
       - 'spec/**/*'
       - 'wakes.gemspec'
+
+Gemspec/RequiredRubyVersion:
+  Enabled: false
