@@ -17,6 +17,8 @@ module Wakes
         if target = TargetCalculator.new(request).run
           redirect(request.fullpath, target)
         end
+      rescue Redis::BaseConnectionError
+        nil
       end
 
       def redirect(from, to)

@@ -22,6 +22,22 @@ RSpec.describe 'redirects' do
 
       expect(response).to have_http_status(:success)
     end
+
+    describe 'does not explode when redis is down' do
+      before do
+        expect(Wakes).to receive(:redis).and_raise(Redis::CannotConnectError)
+      end
+
+      it '404s if necessary instead of redirect' do
+        expect { get '/test' }.to raise_error(ActionController::RoutingError)
+      end
+
+      it 'does not redirect when it should not redirect' do
+        get '/target'
+
+        expect(response).to have_http_status(:success)
+      end
+    end
   end
 
   describe 'params handling' do
