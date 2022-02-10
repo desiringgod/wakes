@@ -27,8 +27,8 @@ Gem::Specification.new do |spec|
   spec.test_files = Dir['spec/**/*']
 
   spec.add_dependency 'google-api-client'
-  spec.add_dependency 'httparty', '~> 0.13'
-  spec.add_dependency 'rails', '>= 4.2.4', '< 6.0.0'
+  spec.add_dependency 'httparty'
+  spec.add_dependency 'rails', '>= 7.0.0'
   spec.add_dependency 'redis'
   spec.add_dependency 'redis-namespace'
 
@@ -46,6 +46,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'sprockets', '<4'
   spec.add_development_dependency 'timecop'
-  spec.add_development_dependency 'vcr', '~> 3.0'
+  spec.add_development_dependency 'vcr'
   spec.add_development_dependency 'webmock'
 end
