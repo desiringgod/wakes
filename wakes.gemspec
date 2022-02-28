@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'google-api-client'
   spec.add_dependency 'httparty'
-  spec.add_dependency 'rails', '>= 7.0.0'
+  spec.add_dependency 'rails', '>= 6.0.0'
   spec.add_dependency 'redis'
   spec.add_dependency 'redis-namespace'
 
