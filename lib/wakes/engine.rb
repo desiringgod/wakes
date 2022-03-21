@@ -5,11 +5,12 @@ module Wakes
     # JSON does not include a date or time type.
     # Setting this to true will cause rails to automatically cast properly formatted
     # dates and times to ruby dates and times.
+    require 'active_support/json/decoding'
     ActiveSupport.parse_json_times = true
 
     config.generators do |g|
       g.test_framework :rspec, :fixture => false
-      g.fixture_replacement :factory_girl, :dir => 'spec/factories'
+      g.fixture_replacement :factory_bot, :dir => 'spec/factories'
       g.assets false
       g.helper false
     end

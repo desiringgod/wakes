@@ -43,8 +43,8 @@ module Wakes
 
     def create_new
       resource = Wakes::Resource.create!(:label => label)
-      target_location.update_attributes(:canonical => true, :resource => resource)
-      source_location.update_attributes(:canonical => false, :resource => resource)
+      target_location.update(:canonical => true, :resource => resource)
+      source_location.update(:canonical => false, :resource => resource)
     end
 
     def both_present
@@ -79,7 +79,7 @@ module Wakes
       resource = target_location.resource
       old_resource = source_location.resource
       old_resource.locations.each do |location|
-        location.update_attributes(:canonical => false, :resource => resource)
+        location.update(:canonical => false, :resource => resource)
       end
       old_resource.reload
       old_resource.destroy
@@ -88,14 +88,14 @@ module Wakes
     def point_source_location_to_target_resource
       return unless target_location.canonical? && !source_location.canonical?
 
-      source_location.update_attributes(:resource => target_location.resource)
+      source_location.update(:resource => target_location.resource)
     end
 
     def point_target_location_to_source_resource
       return unless !target_location.canonical? && source_location.canonical?
 
       source_location.update_attribute(:canonical, false)
-      target_location.update_attributes(:canonical => true, :resource => source_location.resource)
+      target_location.update(:canonical => true, :resource => source_location.resource)
     end
 
     def target_present
@@ -112,7 +112,7 @@ module Wakes
         add_target_to_canonical_source
       else
         resource = Wakes.create!(:host => target_host, :path => target_path, :label => label)
-        source_location.update_attributes(:canonical => false, :resource => resource)
+        source_location.update(:canonical => false, :resource => resource)
       end
     end
 

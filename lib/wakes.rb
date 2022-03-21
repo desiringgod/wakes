@@ -35,12 +35,12 @@ module Wakes
     resource
   end
 
-  def self.create(*args)
-    build(*args).tap(&:save)
+  def self.create(...)
+    build(...).tap(&:save)
   end
 
-  def self.create!(*args)
-    build(*args).tap(&:save!)
+  def self.create!(...)
+    build(...).tap(&:save!)
   end
 
   def self.redirect(source_path_or_url, target_path_or_url, label = nil)
