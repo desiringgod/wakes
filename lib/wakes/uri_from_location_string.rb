@@ -8,6 +8,6 @@ class URIFromLocationString
 
   def self.get_host_and_path(location_string)
     uri = generate(location_string)
-    [uri.host, uri.request_uri]
+    [uri.host.presence, uri.request_uri.presence]
   end
 end

@@ -12,9 +12,9 @@ RSpec::Matchers.define :have_wakes_graph do |canonical_location:, legacy_locatio
     canonical_location_uri = URIFromLocationString.generate(canonical_location)
 
     wakes_resource.locations.count == expected_location_count &&
-      wakes_resource.canonical_location.try(:host) == canonical_location_uri.try(:host) &&
+      wakes_resource.canonical_location.try(:host).presence == canonical_location_uri.try(:host).presence &&
       wakes_resource.canonical_location.try(:path) == canonical_location_uri.try(:request_uri) &&
-      wakes_resource.legacy_locations.pluck(:host, :path).sort ==
+      wakes_resource.legacy_locations.pluck(:host, :path).map { |e| e.map(&:presence) }.sort ==
         legacy_locations.map { |x| URIFromLocationString.get_host_and_path(x) }.sort
   end
 
