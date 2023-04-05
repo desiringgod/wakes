@@ -37,13 +37,19 @@ module Wakes
     def load_next_page
       @page_number ||= 0
       @page_number += 1
+      attempt = 0
 
       begin
         logger.info "Going to request page #{@page_number} for #{start_date} - #{end_date} from Google Analytics"
+        attempt += 1
         google_analytics.get_page_of_pageviews(@page_number, :start_date => start_date, :end_date => end_date)
       rescue Google::Apis::Error => err
         block_for_page(@page_number, err)
-        retry
+        if attempt < 4
+          retry
+        else
+          raise err
+        end
       end
     end
 
