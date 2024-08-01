@@ -26,7 +26,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.test_files = Dir['spec/**/*']
 
-  spec.add_dependency 'google-api-client'
+  spec.add_dependency 'google-apis-analyticsdata_v1beta', '~> 0.1'
+
   spec.add_dependency 'httparty'
   spec.add_dependency 'rails', '>= 6.0.0'
   spec.add_dependency 'redis'
