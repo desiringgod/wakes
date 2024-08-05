@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'google/apis/analytics_v3'
-
 module Wakes
   class GetPathCountsForDateRangeService
     BLOCK_AFTER_ERROR_TIME = 10.minutes

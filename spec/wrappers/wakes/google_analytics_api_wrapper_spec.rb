@@ -4,10 +4,11 @@ require 'rails_helper'
 
 RSpec.describe Wakes::GoogleAnalyticsApiWrapper do
   describe '#get_page_of_pageviews' do
-    let(:rows) { [['/path', 151], ['/path/2', 500]] }
-    let(:results) { double('Results', :rows => rows, :items_per_page => 2) }
+    let(:row1) { double('Row', dimension_values: [double('DimensionValue', value: '/resources/message-1')], metric_values: [double('MetricValue', value: 151)]) }
+    let(:row2) { double('Row', dimension_values: [double('DimensionValue', value: '/resources/article-1')], metric_values: [double('MetricValue', value: 500)]) }
+    let(:results) { double('Results', :rows => [row1, row2], :row_count => 2000) }
     let(:analytics_service) do
-      instance_double('AnalyticsService', :get_ga_data => results)
+      instance_double('AnalyticsDataService', :run_property_report => results)
     end
     let(:start_date) { Time.new(2017, 10, 10).to_date }
     let(:end_date) { Time.new(2017, 12, 12).to_date }
@@ -16,41 +17,24 @@ RSpec.describe Wakes::GoogleAnalyticsApiWrapper do
       allow(subject).to receive(:authorized_analytics_service).and_return(analytics_service)
     end
 
-    it 'calls #get_ga_data on GA' do
-      expect(analytics_service).to receive(:get_ga_data).with(
-        'ga:profile',
-        '2017-10-10',
-        '2017-12-12',
-        'ga:pageviews',
-        :dimensions => 'ga:pagePath',
-        :sort => '-ga:pageviews',
-        :start_index => 1
-      )
-      subject.get_page_of_pageviews(1, :start_date => start_date, :end_date => end_date, :profile_id => 'profile')
-    end
-
     it 'returns a Page of data' do
       page = subject.get_page_of_pageviews(1, :start_date => start_date, :end_date => end_date)
       rows = page.rows
-      expect(rows[0].url.path).to eq('/path')
+      expect(rows[0].url.path).to eq('/resources/message-1')
       expect(rows[0].count).to eq(151)
-      expect(rows[1].url.path).to eq('/path/2')
+      expect(rows[1].url.path).to eq('/resources/article-1')
       expect(rows[1].count).to eq(500)
       expect(page).to_not be_end
     end
 
     context 'page is not 1' do
       it 'correctly calculates the new start index' do
-        expect(analytics_service).to receive(:get_ga_data).with(
-          any_args,
-          a_hash_including(:start_index => 2001)
-        )
-        subject.get_page_of_pageviews(3, :start_date => start_date, :end_date => end_date)
+        expect(subject.send(:start_index_for_page, 3)).to eq(2000)
       end
     end
 
-    context 'rows size is less than items_per_page' do
-      before { allow(results).to receive(:items_per_page).and_return(3) }
+    context 'total row count is less than we should expect to get by this page' do
+      before { allow(results).to receive(:row_count).and_return(2) }
 
       it 'sets the page end to true' do
         page = subject.get_page_of_pageviews(1, :start_date => start_date, :end_date => end_date)
